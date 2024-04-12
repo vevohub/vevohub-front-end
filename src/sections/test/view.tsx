@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import { alpha } from '@mui/material/styles';
 import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { useSettingsContext } from 'src/components/settings';
@@ -24,6 +25,9 @@ export default function SixView() {
           border: (theme) => `dashed 1px ${theme.palette.divider}`,
         }}
       />
+      <TextField>
+        PULA PULA
+      </TextField>
     </Container>
   );
 }

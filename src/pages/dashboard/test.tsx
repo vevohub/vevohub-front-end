@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import SixView from 'src/sections/six/view';
+import SixView from 'src/sections/test/view';
 
 // ----------------------------------------------------------------------
 

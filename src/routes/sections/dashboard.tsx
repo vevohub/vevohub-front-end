@@ -13,7 +13,7 @@ const PageTwo = lazy(() => import('src/pages/dashboard/two'));
 const PageThree = lazy(() => import('src/pages/dashboard/three'));
 const PageFour = lazy(() => import('src/pages/dashboard/four'));
 const PageFive = lazy(() => import('src/pages/dashboard/five'));
-const PageSix = lazy(() => import('src/pages/dashboard/six'));
+const PageSix = lazy(() => import('src/pages/dashboard/test'));
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ export const dashboardRoutes = [
         children: [
           { element: <PageFour />, index: true },
           { path: 'five', element: <PageFive /> },
-          { path: 'six', element: <PageSix /> },
+          { path: 'test', element: <PageSix /> },
         ],
       },
     ],

@@ -73,7 +73,7 @@ export function useNavData() {
             children: [
               { title: 'four', path: paths.dashboard.group.root },
               { title: 'five', path: paths.dashboard.group.five },
-              { title: 'six', path: paths.dashboard.group.six },
+              { title: 'test', path: paths.dashboard.group.test },
             ],
           },
         ],
