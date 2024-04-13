@@ -98,16 +98,25 @@ export type IUserItem = {
   city: string;
   role: string;
   email: string;
-  state: string;
   status: string;
   address: string;
   country: string;
-  zipCode: string;
-  company: string;
+  financial_expectations: string
   avatarUrl: string;
   phoneNumber: string;
   isVerified: boolean;
 };
+
+
+export type IApiUser = {
+  id: number;
+  fullNameCandidate: string;
+  locationCity: string;
+  financialExpectations: string | null;
+  contactNo: string;
+  email: string | null;
+  status: string | null;
+}
 
 export type Candidate = {
   id: number;

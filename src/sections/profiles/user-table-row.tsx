@@ -36,7 +36,7 @@ export default function UserTableRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  const { name, avatarUrl,role, status, email, phoneNumber } = row;
 
   const confirm = useBoolean();
 
@@ -67,7 +67,7 @@ export default function UserTableRow({
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>
+        {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{company}</TableCell>*/}
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{role}</TableCell>
 
