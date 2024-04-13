@@ -96,7 +96,7 @@ export type IUserItem = {
   id: string;
   name: string;
   city: string;
-  role: string;
+  profile: string;
   email: string;
   status: string;
   address: string;
@@ -112,32 +112,12 @@ export type IApiUser = {
   id: number;
   fullNameCandidate: string;
   locationCity: string;
+  profile: string
   financialExpectations: string | null;
   contactNo: string;
   email: string | null;
   status: string | null;
 }
-
-export type Candidate = {
-  id: number;
-  osca: string;
-  recruiter: string;
-  full_name_candidate: string;
-  profile: string;
-  location_city: string;
-  financial_expectations: string;
-  contact_no: string;
-  email: string;
-  linkedin_link: string;
-  interview_rt_week: string;
-  feedback: string;
-  status: string;
-  details: string;
-  first_name: string;
-  last_name: string;
-  is_checked: boolean;
-}
-
 
 export type IUserAccount = {
   email: string;

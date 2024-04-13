@@ -89,9 +89,6 @@ export function AuthProvider({children}: Props) {
       if (accessToken && isValidToken(accessToken)) {
         console.log('AICI')
         setSession(accessToken);
-
-        const API_BASE_URL = 'http://localhost:8080';
-        const userRes = await axios.get(`${API_BASE_URL}/users/${getAccountId()}`);
         const res = await axios.get(endpoints.auth.me);
 
         const {user} = res.data;

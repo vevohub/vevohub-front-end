@@ -41,7 +41,8 @@ export default function UserQuickEditForm({ currentUser, open, onClose }: Props)
     // company: Yup.string().required('Company is required'),
     // state: Yup.string().required('State is required'),
     city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
+
+    profile: Yup.string().required('Profile is required'),
   });
 
   const defaultValues = useMemo(
@@ -54,9 +55,9 @@ export default function UserQuickEditForm({ currentUser, open, onClose }: Props)
       // state: currentUser?.state || '',
       city: currentUser?.city || '',
       // zipCode: currentUser?.zipCode || '',
-      status: currentUser?.status,
+
       // company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      profile: currentUser?.profile || '',
     }),
     [currentUser]
   );

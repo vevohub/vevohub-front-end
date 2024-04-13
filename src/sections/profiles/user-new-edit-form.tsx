@@ -51,7 +51,7 @@ export default function UserNewEditForm({ currentUser }: Props) {
     // company: Yup.string().required('Company is required'),
     // state: Yup.string().required('State is required'),
     city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role is required'),
+    profile: Yup.string().required('Profile is required'),
     // zipCode: Yup.string().required('Zip code is required'),
     avatarUrl: Yup.mixed<any>().nullable().required('Avatar is required'),
     // not required
@@ -63,7 +63,7 @@ export default function UserNewEditForm({ currentUser }: Props) {
     () => ({
       name: currentUser?.name || '',
       city: currentUser?.city || '',
-      role: currentUser?.role || '',
+      profile: currentUser?.profile || '',
       email: currentUser?.email || '',
       // state: currentUser?.state || '',
       status: currentUser?.status || '',

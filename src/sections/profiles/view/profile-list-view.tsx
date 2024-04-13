@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useCallback, useEffect, useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -19,7 +19,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { _roles, fetchApiData, transformApiDataToUserItems, USER_STATUS_OPTIONS } from 'src/_mock';
+import { fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems } from 'src/_mock';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -29,14 +29,14 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
+  useTable,
   emptyRows,
+  TableNoData,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
-  TableNoData,
-  TablePaginationCustom,
   TableSelectedAction,
-  useTable,
+  TablePaginationCustom,
 } from 'src/components/table';
 
 import { IUserItem, IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
@@ -52,7 +52,6 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
   { id: 'phoneNumber', label: 'Phone Number', width: 180 },
-  { id: 'company', label: 'Company', width: 220 },
   { id: 'role', label: 'Role', width: 180 },
   { id: 'status', label: 'Status', width: 100 },
   { id: '', width: 88 },
@@ -78,11 +77,20 @@ export default function ProfileListView() {
   const confirm = useBoolean();
 
   const [tableData, setTableData] = useState<IUserItem[]>([]);
+  const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
-    fetchApiData().then(apiData => {
+    fetchCandidates().then(apiData => {
       const userItems = transformApiDataToUserItems(apiData);
       setTableData(userItems);
+    });
+  }, []);
+
+
+
+  useEffect(() => {
+    fetchRoles().then(fetchedRoles => {
+      setRoles(fetchedRoles);
     });
   }, []);
 
@@ -97,7 +105,7 @@ export default function ProfileListView() {
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
+    table.page * table.rowsPerPage + table.rowsPerPage,
   );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
@@ -114,7 +122,7 @@ export default function ProfileListView() {
         [name]: value,
       }));
     },
-    [table]
+    [table],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -131,7 +139,7 @@ export default function ProfileListView() {
 
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData]
+    [dataInPage.length, enqueueSnackbar, table, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
@@ -151,14 +159,14 @@ export default function ProfileListView() {
     (id: string) => {
       router.push(paths.dashboard.profiles.edit(id));
     },
-    [router]
+    [router],
   );
 
   const handleFilterStatus = useCallback(
     (event: React.SyntheticEvent, newValue: string) => {
       handleFilters('status', newValue);
     },
-    [handleFilters]
+    [handleFilters],
   );
 
   return (
@@ -226,7 +234,7 @@ export default function ProfileListView() {
             filters={filters}
             onFilters={handleFilters}
             //
-            roleOptions={_roles}
+            roleOptions={roles}
           />
 
           {canReset && (
@@ -249,7 +257,7 @@ export default function ProfileListView() {
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  dataFiltered.map((row) => row.id)
+                  dataFiltered.map((row) => row.id),
                 )
               }
               action={
@@ -273,7 +281,7 @@ export default function ProfileListView() {
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      dataFiltered.map((row) => row.id)
+                      dataFiltered.map((row) => row.id),
                     )
                   }
                 />
@@ -282,7 +290,7 @@ export default function ProfileListView() {
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
+                      table.page * table.rowsPerPage + table.rowsPerPage,
                     )
                     .map((row) => (
                       <UserTableRow
@@ -348,10 +356,10 @@ export default function ProfileListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({
-  inputData,
-  comparator,
-  filters,
-}: {
+                       inputData,
+                       comparator,
+                       filters,
+                     }: {
   inputData: IUserItem[];
   comparator: (a: any, b: any) => number;
   filters: IUserTableFilters;
@@ -370,7 +378,7 @@ function applyFilter({
 
   if (name) {
     inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
     );
   }
 
@@ -379,7 +387,7 @@ function applyFilter({
   }
 
   if (role.length) {
-    inputData = inputData.filter((user) => role.includes(user.role));
+    inputData = inputData.filter((user) => role.includes(user.profile));
   }
 
   return inputData;
