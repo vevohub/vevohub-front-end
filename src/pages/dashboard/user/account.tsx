@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import SixView from 'src/sections/test/view';
+import { AccountView } from 'src/sections/account/view';
 
 // ----------------------------------------------------------------------
 
-export default function Page() {
+export default function AccountPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Six</title>
+        <title> Dashboard: Account Settings</title>
       </Helmet>
 
-      <SixView />
+      <AccountView />
     </>
   );
 }
