@@ -8,7 +8,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const IndexPage = lazy(() => import('src/pages/dashboard/one'));
+const IndexPage = lazy(() => import('src/pages/dashboard/profiles/list'));
 const PageTwo = lazy(() => import('src/pages/dashboard/two'));
 const PageThree = lazy(() => import('src/pages/dashboard/three'));
 const PageFour = lazy(() => import('src/pages/dashboard/four'));
@@ -16,6 +16,10 @@ const PageFive = lazy(() => import('src/pages/dashboard/five'));
 const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
 
 // ----------------------------------------------------------------------
+
+// Profiles
+
+const UserCreatePage = lazy(() => import('src/pages/dashboard/profiles/new'));
 
 export const dashboardRoutes = [
   {
@@ -33,6 +37,12 @@ export const dashboardRoutes = [
       { element: <IndexPage />, index: true },
       { path: 'two', element: <PageTwo /> },
       { path: 'three', element: <PageThree /> },
+      {
+        path: 'profiles',
+        children: [
+          { path: 'new', element: <UserCreatePage /> },
+        ],
+      },
       {
         path: 'group',
         children: [

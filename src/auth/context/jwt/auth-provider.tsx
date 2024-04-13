@@ -3,7 +3,7 @@ import {useMemo, useEffect, useReducer, useCallback} from 'react';
 import axios, {endpoints} from 'src/utils/axios';
 
 import {AuthContext} from './auth-context';
-import {setSession, isValidToken} from './utils';
+import { setSession, isValidToken,  getAccountId } from './utils';
 import {AuthUserType, ActionMapType, AuthStateType} from '../../types';
 
 // ----------------------------------------------------------------------
@@ -87,8 +87,11 @@ export function AuthProvider({children}: Props) {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
 
       if (accessToken && isValidToken(accessToken)) {
+        console.log('AICI')
         setSession(accessToken);
 
+        const API_BASE_URL = 'http://localhost:8080';
+        const userRes = await axios.get(`${API_BASE_URL}/users/${getAccountId()}`);
         const res = await axios.get(endpoints.auth.me);
 
         const {user} = res.data;
@@ -132,11 +135,14 @@ export function AuthProvider({children}: Props) {
       password,
     };
 
-    const res = await axios.post(endpoints.auth.login, data);
+     const API_BASE_URL = 'http://localhost:8080';
+    // const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+    const res = await axios.post(`${API_BASE_URL}/auth/login`, data);
+    const userRes = await axios.get(`${API_BASE_URL}/users/${getAccountId()}`);
+    const {accessToken} = res.data;
+    const {user}= userRes.data;
 
-    const {accessToken, user} = res.data;
-
-    console.log(user)
+    // console.log(user)
 
     setSession(accessToken);
 

@@ -138,6 +138,8 @@ export const _userPlans = [
   },
 ];
 
+
+
 export const _userList = [...Array(20)].map((_, index) => ({
   id: _mock.id(index),
   zipCode: '85807',
@@ -155,3 +157,5 @@ export const _userList = [...Array(20)].map((_, index) => ({
   status:
     (index % 2 && 'pending') || (index % 3 && 'banned') || (index % 4 && 'rejected') || 'active',
 }));
+
+

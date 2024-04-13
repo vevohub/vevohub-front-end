@@ -72,3 +72,15 @@ export const setSession = (accessToken: string | null) => {
     delete axios.defaults.headers.common.Authorization;
   }
 };
+
+export const getAccountId = () => {
+  const accessToken = sessionStorage.getItem('accessToken');
+
+  if (!accessToken) {
+    return null;
+  }
+
+  const decoded = jwtDecode(accessToken);
+
+  return decoded['account-id']
+}
