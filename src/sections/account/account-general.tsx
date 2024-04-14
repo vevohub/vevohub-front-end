@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
-import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -25,6 +25,8 @@ import FormProvider, {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 
+import { User } from '../../auth/types';
+
 // ----------------------------------------------------------------------
 
 type UserType = {
@@ -44,7 +46,22 @@ type UserType = {
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { user } = useMockedUser();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await useMockedUser();
+        console.log(userData)
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
 
   const UpdateUserSchema = Yup.object().shape({
     displayName: Yup.string().required('Name is required'),
@@ -62,7 +79,7 @@ export default function AccountGeneral() {
   });
 
   const defaultValues: UserType = {
-    displayName: user?.displayName || '',
+    displayName: user?.firstName || '',
     email: user?.email || '',
     photoURL: user?.photoURL || null,
     phoneNumber: user?.phoneNumber || '',

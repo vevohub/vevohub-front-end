@@ -5,12 +5,12 @@ import { LogoutOptions, PopupLoginOptions, RedirectLoginOptions } from '@auth0/a
 export type ActionMapType<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
     ? {
-        type: Key;
-      }
+      type: Key;
+    }
     : {
-        type: Key;
-        payload: M[Key];
-      };
+      type: Key;
+      payload: M[Key];
+    };
 };
 
 export type AuthUserType = null | Record<string, any>;
@@ -29,7 +29,7 @@ type CanRemove = {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
   ) => Promise<void>;
   //
   loginWithGoogle?: () => Promise<void>;
@@ -83,7 +83,7 @@ export type AmplifyContextType = CanRemove & {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
   ) => Promise<unknown>;
   logout: () => Promise<unknown>;
   confirmRegister: (email: string, code: string) => Promise<void>;
@@ -117,3 +117,22 @@ export type SupabaseContextType = CanRemove & {
   forgotPassword: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
 };
+
+
+export type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  photoURL: string | null;
+  phoneNumber: string | null;
+  country: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zipCode: string | null;
+  about: string | null;
+  role: string; // Assuming role is always present
+  isPublic: boolean | null;
+}

@@ -2,7 +2,7 @@ import { countries } from 'src/assets/data';
 
 import { _mock } from './_mock';
 import axiosInstance from '../utils/axios';
-import { IApiUser, IUserItem } from '../types/user';
+import { IUserItem, IApiProfiles } from '../types/user';
 
 // ----------------------------------------------------------------------
 
@@ -141,9 +141,9 @@ export const _userPlans = [
 ];
 
 
-export async function fetchCandidates(): Promise<IApiUser[]> {
+export async function fetchCandidates(): Promise<IApiProfiles[]> {
   try {
-    const response = await axiosInstance.get<IApiUser[]>('http://localhost:8080/candidates');
+    const response = await axiosInstance.get<IApiProfiles[]>('http://localhost:8080/candidates');
     return response.data;
   } catch (error) {
     console.error('Error fetching data', error);
@@ -162,7 +162,7 @@ export async function fetchRoles(): Promise<string[]> {
 }
 
 
-export function transformApiDataToUserItems(apiData: IApiUser[]): IUserItem[] {
+export function transformApiDataToUserItems(apiData: IApiProfiles[]): IUserItem[] {
   return apiData.map(apiUser => ({
     id: apiUser.id.toString(),
     name: apiUser.fullNameCandidate || 'Default Name',

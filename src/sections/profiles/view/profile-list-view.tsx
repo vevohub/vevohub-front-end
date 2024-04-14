@@ -87,7 +87,7 @@ export default function ProfileListView() {
     });
   }, []);
 
-  //Roles Filters
+  // Roles Filters
   useEffect(() => {
     fetchRoles().then(fetchedRoles => {
       setRoles(fetchedRoles);

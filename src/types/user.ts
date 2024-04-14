@@ -108,7 +108,7 @@ export type IUserItem = {
 };
 
 
-export type IApiUser = {
+export type IApiProfiles = {
   id: number;
   fullNameCandidate: string;
   locationCity: string;

@@ -1,4 +1,5 @@
 import { m } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -17,6 +18,8 @@ import { useAuthContext } from 'src/auth/hooks';
 
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+
+import { User } from '../../auth/types';
 
 // ----------------------------------------------------------------------
 
@@ -39,12 +42,23 @@ const OPTIONS = [
 
 export default function AccountPopover() {
   const router = useRouter();
-
-  const { user } = useMockedUser();
-
+  const [user, setUser] = useState<User | null>(null);
   const { logout } = useAuthContext();
-
   const popover = usePopover();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await useMockedUser();
+        console.log(userData)
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -80,24 +94,23 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.photoURL}
-          alt={user?.displayName}
+          src={user?.photoURL || undefined} // Convert null to undefined
+          alt={user?.firstName}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {user?.displayName?.charAt(0).toUpperCase()}
+          {user?.firstName?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {user?.firstName}
           </Typography>
-
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {user?.email}
           </Typography>
@@ -125,3 +138,4 @@ export default function AccountPopover() {
     </>
   );
 }
+

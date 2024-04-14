@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -14,7 +14,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { NavSectionVertical } from 'src/components/nav-section';
 
 import { NAV } from '../config-layout';
-import NavUpgrade from '../common/nav-upgrade';
+import { User } from '../../auth/types';
 import { useNavData } from './config-navigation';
 import NavToggleButton from '../common/nav-toggle-button';
 
@@ -26,7 +26,21 @@ type Props = {
 };
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
-  const { user } = useMockedUser();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await useMockedUser();
+        console.log(userData)
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const pathname = usePathname();
 
@@ -63,7 +77,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <NavUpgrade />
     </Scrollbar>
   );
 

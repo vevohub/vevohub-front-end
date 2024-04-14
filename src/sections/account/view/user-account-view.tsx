@@ -1,17 +1,20 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
+import { User } from '../../../auth/types';
 import { paths } from '../../../routes/paths';
 import AccountGeneral from '../account-general';
 import AccountNotifications from '../account-notifications';
 import AccountChangePassword from '../account-change-password';
+import { useMockedUser } from '../../../hooks/use-mocked-user';
 // ----------------------------------------------------------------------
 
 const TABS = [
@@ -43,6 +46,28 @@ export default function AccountView() {
     setCurrentTab(newValue);
   }, []);
 
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await useMockedUser();
+        console.log(userData)
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+
+
+  function pula (){
+    console.log(user)
+  }
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -56,6 +81,10 @@ export default function AccountView() {
           mb: { xs: 3, md: 5 },
         }}
       />
+
+      <Button variant="contained" onClick={pula}>
+        Fetch User
+      </Button>
 
       <Tabs
         value={currentTab}
