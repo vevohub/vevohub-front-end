@@ -48,7 +48,7 @@ export default function AccountView() {
       <CustomBreadcrumbs
         heading="Account"
         links={[
-          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'Profiles', href: paths.dashboard.root },
           { name: 'User', href: paths.dashboard.group.account },
           { name: 'Account' },
         ]}

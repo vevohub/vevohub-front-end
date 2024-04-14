@@ -79,6 +79,7 @@ export default function ProfileListView() {
   const [tableData, setTableData] = useState<IUserItem[]>([]);
   const [roles, setRoles] = useState<string[]>([]);
 
+  // Fetch Candidates
   useEffect(() => {
     fetchCandidates().then(apiData => {
       const userItems = transformApiDataToUserItems(apiData);
@@ -86,8 +87,7 @@ export default function ProfileListView() {
     });
   }, []);
 
-
-
+  //Roles Filters
   useEffect(() => {
     fetchRoles().then(fetchedRoles => {
       setRoles(fetchedRoles);
@@ -173,10 +173,10 @@ export default function ProfileListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="Profiles"
           links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User', href: paths.dashboard.profiles.root },
+            { name: 'Profiles', href: paths.dashboard.root },
+            { name: 'Account', href: paths.dashboard.group.account },
             { name: 'List' },
           ]}
           action={
@@ -186,7 +186,7 @@ export default function ProfileListView() {
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              New User
+              New Profile
             </Button>
           }
           sx={{
@@ -233,7 +233,6 @@ export default function ProfileListView() {
           <UserTableToolbar
             filters={filters}
             onFilters={handleFilters}
-            //
             roleOptions={roles}
           />
 
