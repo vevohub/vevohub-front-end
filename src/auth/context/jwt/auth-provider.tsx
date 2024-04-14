@@ -91,8 +91,6 @@ export function AuthProvider({children}: Props) {
         console.log('AICI')
         setSession(accessToken);
 
-        const API_BASE_URL = 'http://localhost:8080';
-
         const res = await axios.get(endpoints.auth.me);
 
         const {user} = res.data;
@@ -137,8 +135,8 @@ export function AuthProvider({children}: Props) {
     };
 
      const API_BASE_URL = 'http://localhost:8080';
-    // const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
     const res = await axios.post(`${API_BASE_URL}/auth/login`, data);
+    const userRes = await axiosInstance.get(`${API_BASE_URL}/users/${getAccountId()}`);
     const {accessToken} = res.data;
     const {user}= res.data;
 
