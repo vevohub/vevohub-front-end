@@ -8,14 +8,18 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const IndexPage = lazy(() => import('src/pages/dashboard/one'));
+const IndexPage = lazy(() => import('src/pages/dashboard/profiles/list'));
 const PageTwo = lazy(() => import('src/pages/dashboard/two'));
 const PageThree = lazy(() => import('src/pages/dashboard/three'));
 const PageFour = lazy(() => import('src/pages/dashboard/four'));
 const PageFive = lazy(() => import('src/pages/dashboard/five'));
-const PageSix = lazy(() => import('src/pages/dashboard/six'));
+const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
 
 // ----------------------------------------------------------------------
+
+// Profiles
+
+const UserCreatePage = lazy(() => import('src/pages/dashboard/profiles/new'));
 
 export const dashboardRoutes = [
   {
@@ -34,11 +38,17 @@ export const dashboardRoutes = [
       { path: 'two', element: <PageTwo /> },
       { path: 'three', element: <PageThree /> },
       {
+        path: 'profiles',
+        children: [
+          { path: 'new', element: <UserCreatePage /> },
+        ],
+      },
+      {
         path: 'group',
         children: [
           { element: <PageFour />, index: true },
           { path: 'five', element: <PageFive /> },
-          { path: 'six', element: <PageSix /> },
+          { path: 'account', element: <UserAccountPage /> },
         ],
       },
     ],

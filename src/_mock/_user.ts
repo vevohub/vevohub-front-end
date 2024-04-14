@@ -1,6 +1,8 @@
 import { countries } from 'src/assets/data';
 
 import { _mock } from './_mock';
+import axiosInstance from '../utils/axios';
+import { IApiUser, IUserItem } from '../types/user';
 
 // ----------------------------------------------------------------------
 
@@ -138,20 +140,41 @@ export const _userPlans = [
   },
 ];
 
-export const _userList = [...Array(20)].map((_, index) => ({
-  id: _mock.id(index),
-  zipCode: '85807',
-  state: 'Virginia',
-  city: 'Rancho Cordova',
-  role: _mock.role(index),
-  email: _mock.email(index),
-  address: '908 Jack Locks',
-  name: _mock.fullName(index),
-  isVerified: _mock.boolean(index),
-  company: _mock.companyName(index),
-  country: countries[index + 1].label,
-  avatarUrl: _mock.image.avatar(index),
-  phoneNumber: _mock.phoneNumber(index),
-  status:
-    (index % 2 && 'pending') || (index % 3 && 'banned') || (index % 4 && 'rejected') || 'active',
-}));
+
+export async function fetchCandidates(): Promise<IApiUser[]> {
+  try {
+    const response = await axiosInstance.get<IApiUser[]>('http://localhost:8080/candidates');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    return [];
+  }
+}
+
+export async function fetchRoles(): Promise<string[]> {
+  try {
+    const response = await axiosInstance.get('http://localhost:8080/candidates/positions');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    return [];
+  }
+}
+
+
+export function transformApiDataToUserItems(apiData: IApiUser[]): IUserItem[] {
+  return apiData.map(apiUser => ({
+    id: apiUser.id.toString(),
+    name: apiUser.fullNameCandidate || 'Default Name',
+    city: apiUser.locationCity || 'Default City',
+    profile: apiUser.profile || 'Default Role',  // Since role isn't provided by API, set a default or another logic
+    email: apiUser.email || 'no-email@example.com',
+    status: apiUser.status || 'pending',
+    address: 'Default Address',  // Not provided by API, use a placeholder
+    country: 'Default Country',  // Not provided by API, use a placeholder
+    financial_expectations: apiUser.financialExpectations || '0',
+    avatarUrl: 'Default Avatar URL',  // Not provided by API, use a placeholder
+    phoneNumber: apiUser.contactNo,
+    isVerified: true,  // Not provided by API, assume a default
+  }));
+}

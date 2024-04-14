@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import OneView from 'src/sections/one/view';
+import { ProfileListView } from 'src/sections/profiles/view';
 
 // ----------------------------------------------------------------------
 
-export default function Page() {
+export default function ProfilesListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: One</title>
+        <title> Dashboard: User List</title>
       </Helmet>
 
-      <OneView />
+      <ProfileListView />
     </>
   );
 }

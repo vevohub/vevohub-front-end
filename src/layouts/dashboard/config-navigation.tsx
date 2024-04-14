@@ -51,7 +51,7 @@ export function useNavData() {
       {
         subheader: 'overview v5.7.0',
         items: [
-          { title: 'one', path: paths.dashboard.root, icon: ICONS.dashboard },
+          { title: 'profiles', path: paths.dashboard.root, icon: ICONS.dashboard },
           { title: 'two', path: paths.dashboard.two, icon: ICONS.ecommerce },
           {
             title: 'three',
@@ -73,7 +73,7 @@ export function useNavData() {
             children: [
               { title: 'four', path: paths.dashboard.group.root },
               { title: 'five', path: paths.dashboard.group.five },
-              { title: 'six', path: paths.dashboard.group.six },
+              { title: 'account', path: paths.dashboard.group.account },
             ],
           },
         ],

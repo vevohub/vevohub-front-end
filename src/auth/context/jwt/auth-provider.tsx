@@ -3,8 +3,9 @@ import {useMemo, useEffect, useReducer, useCallback} from 'react';
 import axios, {endpoints} from 'src/utils/axios';
 
 import {AuthContext} from './auth-context';
-import {setSession, isValidToken} from './utils';
+import { setSession, isValidToken,  getAccountId } from './utils';
 import {AuthUserType, ActionMapType, AuthStateType} from '../../types';
+import axiosInstance from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 /**
@@ -133,11 +134,13 @@ export function AuthProvider({children}: Props) {
       password,
     };
 
-    const res = await axios.post(endpoints.auth.login, data);
+     const API_BASE_URL = 'http://localhost:8080';
+    const res = await axios.post(`${API_BASE_URL}/auth/login`, data);
+    const userRes = await axiosInstance.get(`${API_BASE_URL}/users/${getAccountId()}`);
+    const {accessToken} = res.data;
+    const {user}= res.data;
 
-    const {accessToken, user} = res.data;
-
-    console.log(user)
+    // console.log(user)
 
     setSession(accessToken);
 
