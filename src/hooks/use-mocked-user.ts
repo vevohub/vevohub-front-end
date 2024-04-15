@@ -1,4 +1,5 @@
 import { _mock } from 'src/_mock';
+
 import { User } from '../auth/types';
 import axiosInstance from '../utils/axios';
 import { getAccountId } from '../auth/context/jwt/utils';

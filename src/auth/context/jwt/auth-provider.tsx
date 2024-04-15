@@ -1,9 +1,8 @@
+import axios from 'axios';
 import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
-import axiosInstance from 'src/utils/axios';
-import axios, { endpoints } from 'src/utils/axios';
-
 import { AuthContext } from './auth-context';
+import axiosInstance, { endpoints } from '../../../utils/axios';
 import { setSession, isValidToken, getAccountId } from './utils';
 import { AuthUserType, ActionMapType, AuthStateType } from '../../types';
 
@@ -139,7 +138,7 @@ export function AuthProvider({ children }: Props) {
     const { accessToken } = res.data;
     setSession(accessToken);
 
-    const response = await axios.get(`${API_BASE_URL}/users/${getAccountId()}`);
+    const response = await axiosInstance.get(`${API_BASE_URL}/users/${getAccountId()}`);
     // const userRes = await axiosInstance.get(`${API_BASE_URL}/auth/login`, data);
 
     const user = response.data;

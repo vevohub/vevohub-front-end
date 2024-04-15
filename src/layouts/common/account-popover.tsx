@@ -1,5 +1,4 @@
 import { m } from 'framer-motion';
-import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -12,14 +11,11 @@ import Typography from '@mui/material/Typography';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
 import { useAuthContext } from 'src/auth/hooks';
 
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-import { User } from '../../auth/types';
 
 // ----------------------------------------------------------------------
 
@@ -42,24 +38,8 @@ const OPTIONS = [
 
 export default function AccountPopover() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const { logout } = useAuthContext();
+  const { user,logout } = useAuthContext();
   const popover = usePopover();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await useMockedUser();
-        console.log(userData)
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
   const handleLogout = async () => {
     try {
       await logout();

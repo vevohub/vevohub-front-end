@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
+import { useEffect, useCallback, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,26 +10,19 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
 import { fData } from 'src/utils/format-number';
 
 import { countries } from 'src/assets/data';
 
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFAutocomplete, RHFTextField, RHFUploadAvatar } from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFAutocomplete, RHFUploadAvatar } from 'src/components/hook-form';
 
-import { User } from '../../auth/types';
 import { useAuthContext } from '../../auth/hooks';
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
 
   const { user } = useAuthContext();
-
-
-  console.log('USER');
-  console.log(user);
 
   const UpdateUserSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -45,7 +38,7 @@ export default function AccountGeneral() {
     isPublic: Yup.boolean(),
   });
 
-  const defaultValues: User = {
+  const defaultValues = useMemo(() => ({
     id: user?.id || '',
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -59,12 +52,29 @@ export default function AccountGeneral() {
     about: user?.about || '',
     role: user?.role || '',
     isPublic: user?.isPublic || false,
-  };
+  }), [user]);
 
   const methods = useForm({
     resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      photoURL: '',
+      phoneNumber: '',
+      country: '',
+      address: '',
+      city: '',
+      about: '',
+      isPublic: false,
+    },
   });
+
+  const { reset } = methods;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   const {
     setValue,
