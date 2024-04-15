@@ -26,6 +26,7 @@ import FormProvider, {
 } from 'src/components/hook-form';
 
 import { User } from '../../auth/types';
+import { schema } from '@hookform/resolvers/ajv/src/__tests__/__fixtures__/data';
 
 // ----------------------------------------------------------------------
 
@@ -33,14 +34,14 @@ type UserType = {
   displayName: string;
   email: string;
   photoURL: any;
-  phoneNumber: string;
-  country: string;
-  address: string;
-  state: string;
-  city: string;
-  zipCode: string;
-  about: string;
-  isPublic: boolean;
+  phoneNumber: string | null;
+  country: string | null;
+  address: string | null;
+  state: string | null;
+  city: string | null;
+  zipCode: string | null;
+  about: string | null;
+  isPublic: boolean | null;
 };
 
 export default function AccountGeneral() {
@@ -48,12 +49,45 @@ export default function AccountGeneral() {
 
   const [user, setUser] = useState<User | null>(null);
 
+  const methods = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      displayName: '',
+      email: '',
+      photoURL: '',
+      phoneNumber: '',
+      country: '',
+      address: '',
+      state: '',
+      city: '',
+      zipCode: '',
+      about: '',
+      isPublic: false,
+    },
+  });
+
+  const { reset } = methods;
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userData = await useMockedUser();
         console.log(userData)
         setUser(userData);
+
+        reset({
+          displayName: userData.firstName || '',
+          email: userData.email || '',
+          photoURL: userData.photoURL || undefined,
+          phoneNumber: userData.phoneNumber || '',
+          country: userData.country || '',
+          address: userData.address || '',
+          state: userData.state || '',
+          city: userData.city || '',
+          zipCode: userData.zipCode || '',
+          about: userData.about || '',
+          isPublic: userData.isPublic || false,
+        });
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -66,36 +100,36 @@ export default function AccountGeneral() {
   const UpdateUserSchema = Yup.object().shape({
     displayName: Yup.string().required('Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    photoURL: Yup.mixed<any>().nullable().required('Avatar is required'),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    country: Yup.string().required('Country is required'),
-    address: Yup.string().required('Address is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    about: Yup.string().required('About is required'),
-    // not required
-    isPublic: Yup.boolean(),
+    photoURL: Yup.mixed().nullable().required('Avatar is required'),
+    phoneNumber: Yup.string().nullable().required('Phone number is required'),
+    country: Yup.string().nullable().required('Country is required'),
+    address: Yup.string().nullable().required('Address is required'),
+    state: Yup.string().nullable().required('State is required'),
+    city: Yup.string().nullable().required('City is required'),
+    zipCode: Yup.string().nullable().required('Zip code is required'),
+    about: Yup.string().nullable().required('About is required'),
+    isPublic: Yup.boolean().nullable(),
   });
+
 
   const defaultValues: UserType = {
     displayName: user?.firstName || '',
     email: user?.email || '',
     photoURL: user?.photoURL || null,
-    phoneNumber: user?.phoneNumber || '',
-    country: user?.country || '',
-    address: user?.address || '',
-    state: user?.state || '',
-    city: user?.city || '',
-    zipCode: user?.zipCode || '',
-    about: user?.about || '',
-    isPublic: user?.isPublic || false,
+    phoneNumber: user?.phoneNumber || null,
+    country: user?.country || null,
+    address: user?.address || null,
+    state: user?.state || null,
+    city: user?.city || null,
+    zipCode: user?.zipCode || null,
+    about: user?.about || null,
+    isPublic: user?.isPublic || false,  // Consider if you want to default to false or keep it null when not defined
   };
 
-  const methods = useForm({
-    resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
-  });
+  // const methods = useForm({
+  //   resolver: yupResolver(UpdateUserSchema),
+  //   defaultValues,
+  // });
 
   const {
     setValue,
