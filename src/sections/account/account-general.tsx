@@ -39,9 +39,7 @@ export default function AccountGeneral() {
     phoneNumber: Yup.string().required('Phone number is required'),
     country: Yup.string().required('Country is required'),
     address: Yup.string().required('Address is required'),
-    state: Yup.string().required('State is required'),
     city: Yup.string().required('City is required'),
-    zipCode: Yup.string().required('Zip code is required'),
     about: Yup.string().required('About is required'),
     // not required
     isPublic: Yup.boolean(),
