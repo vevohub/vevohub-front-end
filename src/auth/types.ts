@@ -130,9 +130,21 @@ export type User = {
   country: string | null;
   address: string | null;
   city: string | null;
-  state: string | null;
-  zipCode: string | null;
   about: string | null;
   role: string; // Assuming role is always present
   isPublic: boolean | null;
 }
+
+export type UserApiResponse = {
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  photoURL: string | null;
+  phoneNumber: string;
+  country: string;
+  address: string;
+  city: string;
+  about: string;
+  isPublic: boolean | null;
+  role: string;
+};

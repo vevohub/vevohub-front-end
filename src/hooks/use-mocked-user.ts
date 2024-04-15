@@ -1,6 +1,4 @@
-
 import { _mock } from 'src/_mock';
-
 import { User } from '../auth/types';
 import axiosInstance from '../utils/axios';
 import { getAccountId } from '../auth/context/jwt/utils';
@@ -12,14 +10,14 @@ import { getAccountId } from '../auth/context/jwt/utils';
 // const { user } = useMockedUser();
 
 // TO:
-// import { useAuthContext } from 'src/auth/hooks';
-// const { user } = useAuthContext();
+
+
+
 
 // ----------------------------------------------------------------------
 
 
 export async function fetchUser() {
-  console.log(getAccountId());
   try {
     const response = await axiosInstance.get(`http://localhost:8080/users/${getAccountId()}`);
     return response.data;
@@ -39,13 +37,11 @@ export function useMockedUser(): Promise<User> {
         email: userDataFromAPI.email,
         password: 'demo1234',
         photoURL: _mock.image.avatar(24),
-        phoneNumber: '+40 777666555',
-        country: 'United States',
-        address: '90210 Broadway Blvd',
-        state: 'California',
-        city: 'San Francisco',
-        zipCode: '94116',
-        about: 'Praesent turpis. Phasellus viverra nulla ut metus varius laoreet. Phasellus tempus.',
+        phoneNumber: userDataFromAPI.phoneNumber,
+        country: userDataFromAPI.country,
+        address: userDataFromAPI.address,
+        city: userDataFromAPI.city,
+        about: userDataFromAPI.about,
         role: 'admin',
         isPublic: true,
       };

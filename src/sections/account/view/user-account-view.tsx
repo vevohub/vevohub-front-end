@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
 import Iconify from 'src/components/iconify';
@@ -62,12 +61,6 @@ export default function AccountView() {
     fetchUser();
   }, []);
 
-
-
-  function pula (){
-    console.log(user)
-  }
-
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -81,11 +74,6 @@ export default function AccountView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-
-      <Button variant="contained" onClick={pula}>
-        Fetch User
-      </Button>
-
       <Tabs
         value={currentTab}
         onChange={handleChangeTab}

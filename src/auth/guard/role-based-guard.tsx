@@ -45,8 +45,6 @@ export default function RoleBasedGuard({ hasContent, roles, children, sx }: Role
   // const currentRole = 'user';
   const currentRole = user?.role; // admin;
 
-  console.log('[pula]')
-  console.log(currentRole)
   if (typeof roles !== 'undefined' && !roles.includes(currentRole as string)) {
     return hasContent ? (
       <Container component={MotionContainer} sx={{ textAlign: 'center', ...sx }}>

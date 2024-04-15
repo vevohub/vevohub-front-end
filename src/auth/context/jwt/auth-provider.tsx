@@ -4,7 +4,7 @@ import axiosInstance from 'src/utils/axios';
 import axios, { endpoints } from 'src/utils/axios';
 
 import { AuthContext } from './auth-context';
-import { setSession, isValidToken } from './utils';
+import { setSession, isValidToken, getAccountId } from './utils';
 import { AuthUserType, ActionMapType, AuthStateType } from '../../types';
 
 // ----------------------------------------------------------------------
@@ -137,11 +137,12 @@ export function AuthProvider({ children }: Props) {
     const API_BASE_URL = 'http://localhost:8080';
     const res = await axios.post(`${API_BASE_URL}/auth/login`, data);
     const { accessToken } = res.data;
-    const { user } = res.data;
-
-    // console.log(user)
-
     setSession(accessToken);
+
+    const response = await axios.get(`${API_BASE_URL}/users/${getAccountId()}`);
+    // const userRes = await axiosInstance.get(`${API_BASE_URL}/auth/login`, data);
+
+    const user = response.data;
 
     dispatch({
       type: Types.LOGIN,
@@ -217,6 +218,8 @@ export function AuthProvider({ children }: Props) {
     }),
     [login, logout, register, state.user, status],
   );
-
+  console.log('pula');
+  console.log(memoizedValue, 'memoizedValue');
+  console.log(children, 'children');
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
 }

@@ -1,12 +1,11 @@
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -18,118 +17,56 @@ import { fData } from 'src/utils/format-number';
 import { countries } from 'src/assets/data';
 
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-  RHFAutocomplete,
-} from 'src/components/hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField, RHFUploadAvatar } from 'src/components/hook-form';
 
 import { User } from '../../auth/types';
-import { schema } from '@hookform/resolvers/ajv/src/__tests__/__fixtures__/data';
-
-// ----------------------------------------------------------------------
-
-type UserType = {
-  displayName: string;
-  email: string;
-  photoURL: any;
-  phoneNumber: string | null;
-  country: string | null;
-  address: string | null;
-  state: string | null;
-  city: string | null;
-  zipCode: string | null;
-  about: string | null;
-  isPublic: boolean | null;
-};
+import { useAuthContext } from '../../auth/hooks';
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuthContext();
 
-  const methods = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      displayName: '',
-      email: '',
-      photoURL: '',
-      phoneNumber: '',
-      country: '',
-      address: '',
-      state: '',
-      city: '',
-      zipCode: '',
-      about: '',
-      isPublic: false,
-    },
-  });
 
-  const { reset } = methods;
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await useMockedUser();
-        console.log(userData)
-        setUser(userData);
-
-        reset({
-          displayName: userData.firstName || '',
-          email: userData.email || '',
-          photoURL: userData.photoURL || undefined,
-          phoneNumber: userData.phoneNumber || '',
-          country: userData.country || '',
-          address: userData.address || '',
-          state: userData.state || '',
-          city: userData.city || '',
-          zipCode: userData.zipCode || '',
-          about: userData.about || '',
-          isPublic: userData.isPublic || false,
-        });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
+  console.log('USER');
+  console.log(user);
 
   const UpdateUserSchema = Yup.object().shape({
-    displayName: Yup.string().required('Name is required'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    photoURL: Yup.mixed().nullable().required('Avatar is required'),
-    phoneNumber: Yup.string().nullable().required('Phone number is required'),
-    country: Yup.string().nullable().required('Country is required'),
-    address: Yup.string().nullable().required('Address is required'),
-    state: Yup.string().nullable().required('State is required'),
-    city: Yup.string().nullable().required('City is required'),
-    zipCode: Yup.string().nullable().required('Zip code is required'),
-    about: Yup.string().nullable().required('About is required'),
-    isPublic: Yup.boolean().nullable(),
+    photoURL: Yup.mixed<any>().nullable().required('Avatar is required'),
+    phoneNumber: Yup.string().required('Phone number is required'),
+    country: Yup.string().required('Country is required'),
+    address: Yup.string().required('Address is required'),
+    state: Yup.string().required('State is required'),
+    city: Yup.string().required('City is required'),
+    zipCode: Yup.string().required('Zip code is required'),
+    about: Yup.string().required('About is required'),
+    // not required
+    isPublic: Yup.boolean(),
   });
 
-
-  const defaultValues: UserType = {
-    displayName: user?.firstName || '',
+  const defaultValues: User = {
+    id: user?.id || '',
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
     email: user?.email || '',
+    password: user?.password || '',
     photoURL: user?.photoURL || null,
-    phoneNumber: user?.phoneNumber || null,
-    country: user?.country || null,
-    address: user?.address || null,
-    state: user?.state || null,
-    city: user?.city || null,
-    zipCode: user?.zipCode || null,
-    about: user?.about || null,
-    isPublic: user?.isPublic || false,  // Consider if you want to default to false or keep it null when not defined
+    phoneNumber: user?.phoneNumber || '',
+    country: user?.country || '',
+    address: user?.address || '',
+    city: user?.city || '',
+    about: user?.about || '',
+    role: user?.role || '',
+    isPublic: user?.isPublic || false,
   };
 
-  // const methods = useForm({
-  //   resolver: yupResolver(UpdateUserSchema),
-  //   defaultValues,
-  // });
+  const methods = useForm({
+    resolver: yupResolver(UpdateUserSchema),
+    defaultValues,
+  });
 
   const {
     setValue,
@@ -151,7 +88,7 @@ export default function AccountGeneral() {
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
 
-      const newFile = Object.assign(file, {
+      const newFile: File = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
 
@@ -159,7 +96,7 @@ export default function AccountGeneral() {
         setValue('photoURL', newFile, { shouldValidate: true });
       }
     },
-    [setValue]
+    [setValue],
   );
 
   return (
@@ -187,17 +124,6 @@ export default function AccountGeneral() {
                 </Typography>
               }
             />
-
-            <RHFSwitch
-              name="isPublic"
-              labelPlacement="start"
-              label="Public Profile"
-              sx={{ mt: 5 }}
-            />
-
-            <Button variant="soft" color="error" sx={{ mt: 3 }}>
-              Delete User
-            </Button>
           </Card>
         </Grid>
 
@@ -212,7 +138,8 @@ export default function AccountGeneral() {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="displayName" label="Name" />
+              <RHFTextField name="firstName" label="First Name" />
+              <RHFTextField name="lastName" label="Last Name" />
               <RHFTextField name="email" label="Email Address" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
               <RHFTextField name="address" label="Address" />
@@ -226,9 +153,7 @@ export default function AccountGeneral() {
                 getOptionLabel={(option) => option}
               />
 
-              <RHFTextField name="state" label="State/Region" />
               <RHFTextField name="city" label="City" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
