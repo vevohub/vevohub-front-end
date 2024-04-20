@@ -11,6 +11,8 @@ import { SplashScreen } from 'src/components/loading-screen';
 // JWT
 const JwtLoginPage = lazy(() => import('src/pages/auth/jwt/login'));
 const JwtRegisterPage = lazy(() => import('src/pages/auth/jwt/register'));
+const ClassicForgotPasswordView = lazy(() => import('src/pages/auth/jwt/forgot-password'));
+
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +44,14 @@ const authJwt = {
         </GuestGuard>
       ),
     },
+    {
+      path: 'forgot-password',
+      element: (
+        <AuthClassicLayout>
+          <ClassicForgotPasswordView />
+        </AuthClassicLayout>
+      ),
+    }
   ],
 };
 

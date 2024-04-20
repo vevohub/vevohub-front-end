@@ -18,6 +18,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField, RHFAutocomplete, RHFUploadAvatar } from 'src/components/hook-form';
 
 import { useAuthContext } from '../../auth/hooks';
+import updateUser from '../../_mock/_user';
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
@@ -39,19 +40,15 @@ export default function AccountGeneral() {
   });
 
   const defaultValues = useMemo(() => ({
-    id: user?.id || '',
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    password: user?.password || '',
-    photoURL: user?.photoURL || null,
+    photoURL: user?.photoURL || null, //TODO: We need to adapt photo
     phoneNumber: user?.phoneNumber || '',
     country: user?.country || '',
     address: user?.address || '',
     city: user?.city || '',
     about: user?.about || '',
-    role: user?.role || '',
-    isPublic: user?.isPublic || false,
   }), [user]);
 
   const methods = useForm({
@@ -87,25 +84,27 @@ export default function AccountGeneral() {
       await new Promise((resolve) => setTimeout(resolve, 500));
       enqueueSnackbar('Update success!');
       console.info('DATA', data);
+      await updateUser(data);
+
     } catch (error) {
       console.error(error);
     }
   });
 
-  const handleDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
+  const handleDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
 
-      const newFile: File = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
+    if (file) {
+      const reader = new FileReader();
 
-      if (file) {
-        setValue('photoURL', newFile, { shouldValidate: true });
-      }
-    },
-    [setValue],
-  );
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        console.log(base64data);
+        setValue('photoURL', base64data, { shouldValidate: true });
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [setValue]);
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>

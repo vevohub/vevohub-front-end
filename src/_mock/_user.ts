@@ -178,3 +178,58 @@ export function transformApiDataToUserItems(apiData: IApiProfiles[]): IUserItem[
     isVerified: true,  // Not provided by API, assume a default
   }));
 }
+
+
+import { getAccountId } from '../auth/context/jwt/utils';
+
+// Assuming you have a baseURL for your API
+const baseURL = 'https://api.example.com/';
+
+// Function to update user data via API
+const updateUser = async (userData: any) => {
+
+  try {
+    // Make a PATCH request to update user data
+
+    console.log('User data to update:', userData);
+
+    const response = await axiosInstance.patch(`http://localhost:8080/users/${getAccountId()}`, userData);
+
+    // Check if the request was successful
+    if (response.status === 200) {
+      // Data was updated successfully
+      console.log('User data updated:', response.data);
+    } else {
+      // Handle unsuccessful response
+      throw new Error('Failed to update user data');
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error('Error updating user data:', error.message);
+    throw error;
+  }
+};
+
+
+export const resetForgottenUserPasswordByEmail = async (email: string) => {
+
+  try {
+
+    const response = await axiosInstance.post(`http://localhost:8080/initiate-password-reset`, { email });
+
+    // Check if the request was successful
+    if (response.status === 200) {
+      // Data was updated successfully
+      console.log('User data updated:', response.data);
+    } else {
+      // Handle unsuccessful response
+      throw new Error(`No user found with email: ${email}`);
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error('No user found with email:', error.message);
+    throw error;
+  }
+};
+
+export default updateUser;
