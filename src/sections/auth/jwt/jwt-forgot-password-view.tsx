@@ -1,9 +1,11 @@
 import * as Yup from 'yup';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -14,9 +16,8 @@ import { PasswordIcon } from 'src/assets/icons';
 
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+
 import { resetForgottenUserPasswordByEmail } from '../../../_mock';
-import { useState } from 'react';
-import Button from '@mui/material/Button';
 
 // ----------------------------------------------------------------------
 
