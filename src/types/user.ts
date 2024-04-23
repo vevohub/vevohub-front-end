@@ -143,5 +143,5 @@ export type IUserAccountBillingHistory = {
 export type IUserAccountChangePassword = {
   oldPassword: string;
   newPassword: string;
-  confirmNewPassword: string;
+  confirmPassword: string;
 };

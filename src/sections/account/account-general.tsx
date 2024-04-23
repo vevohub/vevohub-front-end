@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { useEffect, useCallback, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMemo, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -17,8 +17,8 @@ import { countries } from 'src/assets/data';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField, RHFAutocomplete, RHFUploadAvatar } from 'src/components/hook-form';
 
-import { useAuthContext } from '../../auth/hooks';
 import updateUser from '../../_mock/_user';
+import { useAuthContext } from '../../auth/hooks';
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
@@ -43,7 +43,7 @@ export default function AccountGeneral() {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    photoURL: user?.photoURL || null, //TODO: We need to adapt photo
+    photoURL: user?.photoURL || null, // TODO: We need to adapt photo
     phoneNumber: user?.phoneNumber || '',
     country: user?.country || '',
     address: user?.address || '',

@@ -1,16 +1,17 @@
-import { countries } from 'src/assets/data';
+import {countries} from 'src/assets/data';
 
-import { _mock } from './_mock';
+import {_mock} from './_mock';
 import axiosInstance from '../utils/axios';
-import { IUserItem, IApiProfiles } from '../types/user';
+import {IUserItem, IApiProfiles} from '../types/user';
+import {getAccountId} from '../auth/context/jwt/utils';
 
 // ----------------------------------------------------------------------
 
 export const USER_STATUS_OPTIONS = [
-  { value: 'active', label: 'Active' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'banned', label: 'Banned' },
-  { value: 'rejected', label: 'Rejected' },
+  {value: 'active', label: 'Active'},
+  {value: 'pending', label: 'Pending'},
+  {value: 'banned', label: 'Banned'},
+  {value: 'rejected', label: 'Rejected'},
 ];
 
 export const _userAbout = {
@@ -179,9 +180,6 @@ export function transformApiDataToUserItems(apiData: IApiProfiles[]): IUserItem[
   }));
 }
 
-
-import { getAccountId } from '../auth/context/jwt/utils';
-
 // Assuming you have a baseURL for your API
 const baseURL = 'https://api.example.com/';
 
@@ -215,7 +213,7 @@ export const resetForgottenUserPasswordByEmail = async (email: string) => {
 
   try {
 
-    const response = await axiosInstance.post(`http://localhost:8080/initiate-password-reset`, { email });
+    const response = await axiosInstance.post(`http://localhost:8080/initiate-password-reset`, {email});
 
     // Check if the request was successful
     if (response.status === 200) {
@@ -231,5 +229,27 @@ export const resetForgottenUserPasswordByEmail = async (email: string) => {
     throw error;
   }
 };
+
+export const updateUserCredentials = async (data: any) => {
+
+  try {
+
+    const response = await axiosInstance.post(`http://localhost:8080/update-password`, data);
+
+    // Check if the request was successful
+    if (response.status === 200) {
+      // Data was updated successfully
+      console.log('User data updated:', response.data);
+    } else {
+      // Handle unsuccessful response
+      throw new Error(`No user found with email: ${data}`);
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error('No user found with email:', error.message);
+    throw error;
+  }
+};
+
 
 export default updateUser;

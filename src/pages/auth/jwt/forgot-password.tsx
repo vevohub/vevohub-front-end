@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+
 import ClassicForgotPasswordView from '../../../sections/auth/jwt/jwt-forgot-password-view';
 
 
