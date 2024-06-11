@@ -7,15 +7,14 @@ import Drawer from '@mui/material/Drawer';
 import { usePathname } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
-import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 import { NavSectionVertical } from 'src/components/nav-section';
 
 import { NAV } from '../config-layout';
-import NavUpgrade from '../common/nav-upgrade';
 import { useNavData } from './config-navigation';
+import { useAuthContext } from '../../auth/hooks';
 import NavToggleButton from '../common/nav-toggle-button';
 
 // ----------------------------------------------------------------------
@@ -26,7 +25,8 @@ type Props = {
 };
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
-  const { user } = useMockedUser();
+
+  const { user } = useAuthContext();
 
   const pathname = usePathname();
 
@@ -63,7 +63,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <NavUpgrade />
     </Scrollbar>
   );
 

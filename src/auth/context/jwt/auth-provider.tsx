@@ -1,11 +1,10 @@
-import {useMemo, useEffect, useReducer, useCallback} from 'react';
+import axios from 'axios';
+import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
-import axios, {endpoints} from 'src/utils/axios';
-
-import {AuthContext} from './auth-context';
-import { setSession, isValidToken,  getAccountId } from './utils';
-import {AuthUserType, ActionMapType, AuthStateType} from '../../types';
-import axiosInstance from 'src/utils/axios';
+import { AuthContext } from './auth-context';
+import axiosInstance, { endpoints } from '../../../utils/axios';
+import { setSession, isValidToken, getAccountId } from './utils';
+import { AuthUserType, ActionMapType, AuthStateType } from '../../types';
 
 // ----------------------------------------------------------------------
 /**
@@ -80,7 +79,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export function AuthProvider({children}: Props) {
+export function AuthProvider({ children }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const initialize = useCallback(async () => {
@@ -88,12 +87,12 @@ export function AuthProvider({children}: Props) {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
 
       if (accessToken && isValidToken(accessToken)) {
-        console.log('AICI')
+        console.log('AICI');
         setSession(accessToken);
 
         const res = await axios.get(endpoints.auth.me);
 
-        const {user} = res.data;
+        const { user } = res.data;
 
         dispatch({
           type: Types.INITIAL,
@@ -134,15 +133,15 @@ export function AuthProvider({children}: Props) {
       password,
     };
 
-     const API_BASE_URL = 'http://localhost:8080';
+    const API_BASE_URL = 'http://localhost:8080';
     const res = await axios.post(`${API_BASE_URL}/auth/login`, data);
-    const userRes = await axiosInstance.get(`${API_BASE_URL}/users/${getAccountId()}`);
-    const {accessToken} = res.data;
-    const {user}= res.data;
-
-    // console.log(user)
-
+    const { accessToken } = res.data;
     setSession(accessToken);
+
+    const response = await axiosInstance.get(`${API_BASE_URL}/users/${getAccountId()}`);
+    // const userRes = await axiosInstance.get(`${API_BASE_URL}/auth/login`, data);
+
+    const user = response.data;
 
     dispatch({
       type: Types.LOGIN,
@@ -164,24 +163,30 @@ export function AuthProvider({children}: Props) {
         firstName,
         lastName,
       };
+      const API_BASE_URL = 'http://localhost:8080';
 
-      const res = await axios.post(endpoints.auth.register, data);
 
-      const {accessToken, user} = res.data;
+      const res = await axiosInstance.post(`${API_BASE_URL}/register`, data);
 
-      sessionStorage.setItem(STORAGE_KEY, accessToken);
+      const resLogin = await axiosInstance.post(`${API_BASE_URL}/auth/login`, { email, password });
+
+      const { accessToken } = resLogin.data;
+
+      const { user } = res.data;
+
+      // sessionStorage.setItem(STORAGE_KEY, accessToken);
+      setSession(accessToken);
 
       dispatch({
         type: Types.REGISTER,
         payload: {
           user: {
             ...user,
-            accessToken,
           },
         },
       });
     },
-    []
+    [],
   );
 
   // LOGOUT
@@ -210,8 +215,10 @@ export function AuthProvider({children}: Props) {
       register,
       logout,
     }),
-    [login, logout, register, state.user, status]
+    [login, logout, register, state.user, status],
   );
-
+  console.log('pula');
+  console.log(memoizedValue, 'memoizedValue');
+  console.log(children, 'children');
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
 }

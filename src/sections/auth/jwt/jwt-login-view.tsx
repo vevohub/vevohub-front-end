@@ -45,7 +45,7 @@ export default function JwtLoginView() {
 
   const defaultValues = {
     email: 'victor@test.com',
-    password: 'cartman92',
+    password: 'ZOIDBERg1337!@',
   };
 
   const methods = useForm({
@@ -104,7 +104,7 @@ export default function JwtLoginView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
+      <Link component={RouterLink} href={paths.auth.jwt.forgotPassword} variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
         Forgot password?
       </Link>
 

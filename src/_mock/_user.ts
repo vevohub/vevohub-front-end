@@ -1,16 +1,17 @@
-import { countries } from 'src/assets/data';
+import {countries} from 'src/assets/data';
 
-import { _mock } from './_mock';
+import {_mock} from './_mock';
 import axiosInstance from '../utils/axios';
-import { IApiUser, IUserItem } from '../types/user';
+import {IUserItem, IApiProfiles} from '../types/user';
+import {getAccountId} from '../auth/context/jwt/utils';
 
 // ----------------------------------------------------------------------
 
 export const USER_STATUS_OPTIONS = [
-  { value: 'active', label: 'Active' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'banned', label: 'Banned' },
-  { value: 'rejected', label: 'Rejected' },
+  {value: 'active', label: 'Active'},
+  {value: 'pending', label: 'Pending'},
+  {value: 'banned', label: 'Banned'},
+  {value: 'rejected', label: 'Rejected'},
 ];
 
 export const _userAbout = {
@@ -141,9 +142,9 @@ export const _userPlans = [
 ];
 
 
-export async function fetchCandidates(): Promise<IApiUser[]> {
+export async function fetchCandidates(): Promise<IApiProfiles[]> {
   try {
-    const response = await axiosInstance.get<IApiUser[]>('http://localhost:8080/candidates');
+    const response = await axiosInstance.get<IApiProfiles[]>('http://localhost:8080/candidates');
     return response.data;
   } catch (error) {
     console.error('Error fetching data', error);
@@ -162,7 +163,7 @@ export async function fetchRoles(): Promise<string[]> {
 }
 
 
-export function transformApiDataToUserItems(apiData: IApiUser[]): IUserItem[] {
+export function transformApiDataToUserItems(apiData: IApiProfiles[]): IUserItem[] {
   return apiData.map(apiUser => ({
     id: apiUser.id.toString(),
     name: apiUser.fullNameCandidate || 'Default Name',
@@ -178,3 +179,77 @@ export function transformApiDataToUserItems(apiData: IApiUser[]): IUserItem[] {
     isVerified: true,  // Not provided by API, assume a default
   }));
 }
+
+// Assuming you have a baseURL for your API
+const baseURL = 'https://api.example.com/';
+
+// Function to update user data via API
+const updateUser = async (userData: any) => {
+
+  try {
+    // Make a PATCH request to update user data
+
+    console.log('User data to update:', userData);
+
+    const response = await axiosInstance.patch(`http://localhost:8080/users/${getAccountId()}`, userData);
+
+    // Check if the request was successful
+    if (response.status === 200) {
+      // Data was updated successfully
+      console.log('User data updated:', response.data);
+    } else {
+      // Handle unsuccessful response
+      throw new Error('Failed to update user data');
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error('Error updating user data:', error.message);
+    throw error;
+  }
+};
+
+
+export const resetForgottenUserPasswordByEmail = async (email: string) => {
+
+  try {
+
+    const response = await axiosInstance.post(`http://localhost:8080/initiate-password-reset`, {email});
+
+    // Check if the request was successful
+    if (response.status === 200) {
+      // Data was updated successfully
+      console.log('User data updated:', response.data);
+    } else {
+      // Handle unsuccessful response
+      throw new Error(`No user found with email: ${email}`);
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error('No user found with email:', error.message);
+    throw error;
+  }
+};
+
+export const updateUserCredentials = async (data: any) => {
+
+  try {
+
+    const response = await axiosInstance.post(`http://localhost:8080/update-password`, data);
+
+    // Check if the request was successful
+    if (response.status === 200) {
+      // Data was updated successfully
+      console.log('User data updated:', response.data);
+    } else {
+      // Handle unsuccessful response
+      throw new Error(`No user found with email: ${data}`);
+    }
+  } catch (error) {
+    // Handle any errors
+    console.error('No user found with email:', error.message);
+    throw error;
+  }
+};
+
+
+export default updateUser;

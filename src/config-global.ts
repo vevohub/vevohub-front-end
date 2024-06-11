@@ -37,3 +37,8 @@ export const MAPBOX_API = import.meta.env.VITE_MAPBOX_API;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
+
+
+// Return to Login Page
+
+export const PATH_AFTER_LOGOUT = paths.auth.jwt.login; // as '/auth/jwt/login'

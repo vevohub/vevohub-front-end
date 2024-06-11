@@ -1,84 +1,77 @@
 import * as Yup from 'yup';
-import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMemo, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-
-import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import { fData } from 'src/utils/format-number';
 
 import { countries } from 'src/assets/data';
 
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-  RHFAutocomplete,
-} from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFAutocomplete, RHFUploadAvatar } from 'src/components/hook-form';
 
-// ----------------------------------------------------------------------
-
-type UserType = {
-  displayName: string;
-  email: string;
-  photoURL: any;
-  phoneNumber: string;
-  country: string;
-  address: string;
-  state: string;
-  city: string;
-  zipCode: string;
-  about: string;
-  isPublic: boolean;
-};
+import updateUser from '../../_mock/_user';
+import { useAuthContext } from '../../auth/hooks';
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { user } = useMockedUser();
+  const { user } = useAuthContext();
 
   const UpdateUserSchema = Yup.object().shape({
-    displayName: Yup.string().required('Name is required'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     photoURL: Yup.mixed<any>().nullable().required('Avatar is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     country: Yup.string().required('Country is required'),
     address: Yup.string().required('Address is required'),
-    state: Yup.string().required('State is required'),
     city: Yup.string().required('City is required'),
-    zipCode: Yup.string().required('Zip code is required'),
     about: Yup.string().required('About is required'),
     // not required
     isPublic: Yup.boolean(),
   });
 
-  const defaultValues: UserType = {
-    displayName: user?.displayName || '',
+  const defaultValues = useMemo(() => ({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
     email: user?.email || '',
-    photoURL: user?.photoURL || null,
+    photoURL: user?.photoURL || null, // TODO: We need to adapt photo
     phoneNumber: user?.phoneNumber || '',
     country: user?.country || '',
     address: user?.address || '',
-    state: user?.state || '',
     city: user?.city || '',
-    zipCode: user?.zipCode || '',
     about: user?.about || '',
-    isPublic: user?.isPublic || false,
-  };
+  }), [user]);
 
   const methods = useForm({
     resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      photoURL: '',
+      phoneNumber: '',
+      country: '',
+      address: '',
+      city: '',
+      about: '',
+      isPublic: false,
+    },
   });
+
+  const { reset } = methods;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [reset, defaultValues]);
 
   const {
     setValue,
@@ -91,25 +84,27 @@ export default function AccountGeneral() {
       await new Promise((resolve) => setTimeout(resolve, 500));
       enqueueSnackbar('Update success!');
       console.info('DATA', data);
+      await updateUser(data);
+
     } catch (error) {
       console.error(error);
     }
   });
 
-  const handleDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
+  const handleDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
 
-      const newFile = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
+    if (file) {
+      const reader = new FileReader();
 
-      if (file) {
-        setValue('photoURL', newFile, { shouldValidate: true });
-      }
-    },
-    [setValue]
-  );
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        console.log(base64data);
+        setValue('photoURL', base64data, { shouldValidate: true });
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [setValue]);
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -136,17 +131,6 @@ export default function AccountGeneral() {
                 </Typography>
               }
             />
-
-            <RHFSwitch
-              name="isPublic"
-              labelPlacement="start"
-              label="Public Profile"
-              sx={{ mt: 5 }}
-            />
-
-            <Button variant="soft" color="error" sx={{ mt: 3 }}>
-              Delete User
-            </Button>
           </Card>
         </Grid>
 
@@ -161,7 +145,8 @@ export default function AccountGeneral() {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="displayName" label="Name" />
+              <RHFTextField name="firstName" label="First Name" />
+              <RHFTextField name="lastName" label="Last Name" />
               <RHFTextField name="email" label="Email Address" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
               <RHFTextField name="address" label="Address" />
@@ -175,9 +160,7 @@ export default function AccountGeneral() {
                 getOptionLabel={(option) => option}
               />
 
-              <RHFTextField name="state" label="State/Region" />
               <RHFTextField name="city" label="City" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>

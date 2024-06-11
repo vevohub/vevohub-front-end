@@ -75,7 +75,6 @@ export const setSession = (accessToken: string | null) => {
 
 export const getAccountId = () => {
   const accessToken = sessionStorage.getItem('accessToken');
-
   if (!accessToken) {
     return null;
   }

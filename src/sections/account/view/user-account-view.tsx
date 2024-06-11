@@ -10,6 +10,7 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
 import { paths } from '../../../routes/paths';
 import AccountGeneral from '../account-general';
+import { useAuthContext } from '../../../auth/hooks';
 import AccountNotifications from '../account-notifications';
 import AccountChangePassword from '../account-change-password';
 // ----------------------------------------------------------------------
@@ -43,6 +44,8 @@ export default function AccountView() {
     setCurrentTab(newValue);
   }, []);
 
+  const { user } = useAuthContext();
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -56,7 +59,6 @@ export default function AccountView() {
           mb: { xs: 3, md: 5 },
         }}
       />
-
       <Tabs
         value={currentTab}
         onChange={handleChangeTab}

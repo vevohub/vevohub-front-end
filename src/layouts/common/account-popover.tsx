@@ -11,12 +11,11 @@ import Typography from '@mui/material/Typography';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
 import { useAuthContext } from 'src/auth/hooks';
 
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+
 
 // ----------------------------------------------------------------------
 
@@ -39,13 +38,8 @@ const OPTIONS = [
 
 export default function AccountPopover() {
   const router = useRouter();
-
-  const { user } = useMockedUser();
-
-  const { logout } = useAuthContext();
-
+  const { user,logout } = useAuthContext();
   const popover = usePopover();
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -80,24 +74,23 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.photoURL}
-          alt={user?.displayName}
+          src={user?.photoURL || undefined} // Convert null to undefined
+          alt={user?.firstName}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {user?.displayName?.charAt(0).toUpperCase()}
+          {user?.firstName?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {user?.firstName}
           </Typography>
-
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {user?.email}
           </Typography>
@@ -125,3 +118,4 @@ export default function AccountPopover() {
     </>
   );
 }
+

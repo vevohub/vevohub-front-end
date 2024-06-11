@@ -108,7 +108,7 @@ export type IUserItem = {
 };
 
 
-export type IApiUser = {
+export type IApiProfiles = {
   id: number;
   fullNameCandidate: string;
   locationCity: string;
@@ -143,5 +143,5 @@ export type IUserAccountBillingHistory = {
 export type IUserAccountChangePassword = {
   oldPassword: string;
   newPassword: string;
-  confirmNewPassword: string;
+  confirmPassword: string;
 };
