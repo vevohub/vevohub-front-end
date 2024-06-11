@@ -8,13 +8,14 @@ const ROOTS = {
 // ----------------------------------------------------------------------
 
 export const paths = {
-  minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
-  // AUTH
-  auth: {
-    jwt: {
-      login: `${ROOTS.AUTH}/jwt/login`,
-      register: `${ROOTS.AUTH}/jwt/register`,
-      forgotPassword: `${ROOTS.AUTH}/jwt/forgot-password`,
+    minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
+    // AUTH
+    auth: {
+      jwt: {
+        login: `${ROOTS.AUTH}/jwt/login`,
+        register: `${ROOTS.AUTH}/jwt/register`,
+        forgotPassword: `${ROOTS.AUTH}/jwt/forgot-password`,
+        resetPassword: (resetToken: string) =>`${ROOTS.AUTH}/jwt/reset-password${resetToken}`
     },
   },
   // DASHBOARD
