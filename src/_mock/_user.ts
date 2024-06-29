@@ -1,5 +1,5 @@
 import axiosInstance from '../utils/axios';
-import {IApiProfile, IUserItem} from '../types/user';
+import {IUserItem, IApiProfile} from '../types/user';
 import {getAccountId} from '../auth/context/jwt/utils';
 import {candidatesResponseAPI} from "../types/candidates";
 
@@ -13,10 +13,10 @@ export const USER_STATUS_OPTIONS = [
 ];
 
 
-export async function fetchCandidates(page: number, size: number): Promise<candidatesResponseAPI[]> {
+export async function fetchCandidates(page: number, size: number): Promise<candidatesResponseAPI> {
   try {
-    const response = await axiosInstance.get<candidatesResponseAPI[]>('http://localhost:8080/candidates', {
-      params: {page, size}
+    const response = await axiosInstance.get<candidatesResponseAPI>('http://localhost:8080/candidates', {
+      params: { page, size }
     });
     return response.data;
   } catch (error) {
@@ -24,7 +24,6 @@ export async function fetchCandidates(page: number, size: number): Promise<candi
     throw error;
   }
 }
-
 export async function fetchRoles(): Promise<string[]> {
   try {
     const response = await axiosInstance.get('http://localhost:8080/candidates/positions');
@@ -51,6 +50,32 @@ export function transformApiDataToUserItems(apiData: IApiProfile[]): IUserItem[]
     isVerified: true,  // Not provided by API, assume a default
   }));
 }
+
+export const fetchUserById = async (id: string): Promise<IUserItem> => {
+  try {
+    const response = await axiosInstance.get(`http://localhost:8080/candidates/${id}`);
+    const apiUser = response.data;
+    return {
+      id: apiUser.id.toString(),
+      name: apiUser.fullNameCandidate || 'Default Name',
+      city: apiUser.locationCity || 'Default City',
+      profile: apiUser.profile || 'Default Role',
+      email: apiUser.email || 'no-email@example.com',
+      status: apiUser.status || 'pending',
+      address: 'Default Address', // Placeholder
+      country: 'Default Country', // Placeholder
+      financial_expectations: apiUser.financialExpectations || '0',
+      avatarUrl: 'Default Avatar URL', // Placeholder
+      phoneNumber: apiUser.contactNo,
+      isVerified: true, // Default value
+    };
+  } catch (error) {
+    console.error('Error fetching user by ID', error);
+    throw error;
+  }
+};
+
+
 
 // Assuming you have a baseURL for your API
 const baseURL = 'https://api.example.com/';

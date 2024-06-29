@@ -24,7 +24,7 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/profiles`,
       list: `${ROOTS.DASHBOARD}/profiles/list`,
       new: `${ROOTS.DASHBOARD}/profiles/new`,
-      edit: (id: string) => `${ROOTS.DASHBOARD}/user/${id}/edit`,
+      edit: (id: string) => `${ROOTS.DASHBOARD}/profiles/${id}/edit`,
     },
     two: `${ROOTS.DASHBOARD}/gdpr`,
     three: `${ROOTS.DASHBOARD}/three`,
