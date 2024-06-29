@@ -1,26 +1,15 @@
-import isEqual from 'lodash/isEqual';
-import { useState, useEffect, useCallback } from 'react';
-
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import Card from '@mui/material/Card';
-import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+  Tab, Tabs, Card, Table, Button, Tooltip,
+  Container, TableBody, IconButton, TableContainer
+} from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import Container from '@mui/material/Container';
-import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
-import TableContainer from '@mui/material/TableContainer';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import { fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems } from 'src/_mock';
-
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -29,23 +18,14 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
-  useTable,
-  emptyRows,
-  TableNoData,
-  getComparator,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableSelectedAction,
-  TablePaginationCustom,
+  useTable, emptyRows, TableNoData, getComparator, TableEmptyRows,
+  TableHeadCustom, TableSelectedAction, TablePaginationCustom,
 } from 'src/components/table';
-
 import { IUserItem, IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
-
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
 import UserTableFiltersResult from '../user-table-filters-result';
-
-// ----------------------------------------------------------------------
+import isEqual from "lodash/isEqual";
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
@@ -63,29 +43,29 @@ const defaultFilters: IUserTableFilters = {
   status: 'all',
 };
 
-// ----------------------------------------------------------------------
-
 export default function ProfileListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const table = useTable();
-
   const settings = useSettingsContext();
-
   const router = useRouter();
-
   const confirm = useBoolean();
 
   const [tableData, setTableData] = useState<IUserItem[]>([]);
   const [roles, setRoles] = useState<string[]>([]);
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   // Fetch Candidates
   useEffect(() => {
-    fetchCandidates().then(apiData => {
-      const userItems = transformApiDataToUserItems(apiData);
+    fetchCandidates(page, size).then(apiData => {
+      const userItems = transformApiDataToUserItems(apiData.content);
       setTableData(userItems);
+      setTotalElements(apiData.totalElements);
+      setTotalPages(apiData.totalPages);
     });
-  }, []);
+  }, [page, size]); // Add page and size as dependencies
 
   // Roles Filters
   useEffect(() => {
@@ -93,7 +73,6 @@ export default function ProfileListView() {
       setRoles(fetchedRoles);
     });
   }, []);
-
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -132,11 +111,8 @@ export default function ProfileListView() {
   const handleDeleteRow = useCallback(
     (id: string) => {
       const deleteRow = tableData.filter((row) => row.id !== id);
-
       enqueueSnackbar('Delete success!');
-
       setTableData(deleteRow);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData],
@@ -144,11 +120,8 @@ export default function ProfileListView() {
 
   const handleDeleteRows = useCallback(() => {
     const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
     enqueueSnackbar('Delete success!');
-
     setTableData(deleteRows);
-
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
@@ -168,6 +141,15 @@ export default function ProfileListView() {
     },
     [handleFilters],
   );
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSize(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page when page size changes
+  };
 
   return (
     <>
@@ -230,19 +212,13 @@ export default function ProfileListView() {
             ))}
           </Tabs>
 
-          <UserTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            roleOptions={roles}
-          />
+          <UserTableToolbar filters={filters} onFilters={handleFilters} roleOptions={roles} />
 
           {canReset && (
             <UserTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
-              //
               onResetFilters={handleResetFilters}
-              //
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
             />
@@ -314,14 +290,14 @@ export default function ProfileListView() {
           </TableContainer>
 
           <TablePaginationCustom
-            count={dataFiltered.length}
-            page={table.page}
-            rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
-            //
+            count={totalElements}
+            page={page}
             dense={table.dense}
+            rowsPerPage={size}
+            onPageChange={handleChangePage}
             onChangeDense={table.onChangeDense}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25]}
           />
         </Card>
       </Container>
@@ -376,9 +352,7 @@ function applyFilter({
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
-    inputData = inputData.filter(
-      (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1,
-    );
+    inputData = inputData.filter((user) => user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1);
   }
 
   if (status !== 'all') {
