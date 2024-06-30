@@ -1,15 +1,20 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import isEqual from "lodash/isEqual";
+import React, { useState, useEffect, useCallback } from 'react';
+
+import { alpha } from '@mui/material/styles';
 import {
   Tab, Tabs, Card, Table, Button, Tooltip,
   Container, TableBody, IconButton, TableContainer
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+
 import { useBoolean } from 'src/hooks/use-boolean';
+
 import { fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems } from 'src/_mock';
+
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -21,11 +26,12 @@ import {
   useTable, emptyRows, TableNoData, getComparator, TableEmptyRows,
   TableHeadCustom, TableSelectedAction, TablePaginationCustom,
 } from 'src/components/table';
+
 import { IUserItem, IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
+
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
 import UserTableFiltersResult from '../user-table-filters-result';
-import isEqual from "lodash/isEqual";
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
@@ -64,6 +70,8 @@ export default function ProfileListView() {
       setTableData(userItems);
       setTotalElements(apiData.totalElements);
       setTotalPages(apiData.totalPages);
+    }).catch(error => {
+      console.error('Error fetching candidates:', error);
     });
   }, [page, size]); // Add page and size as dependencies
 

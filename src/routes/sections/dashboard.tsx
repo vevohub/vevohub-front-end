@@ -1,10 +1,10 @@
-import { lazy, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import {lazy, Suspense} from 'react';
+import {Outlet} from 'react-router-dom';
 
-import { AuthGuard } from 'src/auth/guard';
+import {AuthGuard} from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 
-import { LoadingScreen } from 'src/components/loading-screen';
+import {LoadingScreen} from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +20,7 @@ const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
 // Profiles
 
 const UserCreatePage = lazy(() => import('src/pages/dashboard/profiles/new'));
+const ProfileEditPage = lazy(() => import('src/pages/dashboard/profiles/edit'));
 
 export const dashboardRoutes = [
   {
@@ -27,28 +28,29 @@ export const dashboardRoutes = [
     element: (
       <AuthGuard>
         <DashboardLayout>
-          <Suspense fallback={<LoadingScreen />}>
-            <Outlet />
+          <Suspense fallback={<LoadingScreen/>}>
+            <Outlet/>
           </Suspense>
         </DashboardLayout>
       </AuthGuard>
     ),
     children: [
-      { element: <IndexPage />, index: true },
-      { path: 'gdpr', element: <PageTwo /> },
-      { path: 'three', element: <PageThree /> },
+      {element: <IndexPage/>, index: true},
+      {path: 'gdpr', element: <PageTwo/>},
+      {path: 'three', element: <PageThree/>},
       {
         path: 'profiles',
         children: [
-          { path: 'new', element: <UserCreatePage /> },
+          {path: 'new', element: <UserCreatePage/>},
+          {path: ':id/edit', element: <ProfileEditPage/>},
         ],
       },
       {
         path: 'group',
         children: [
-          { element: <PageFour />, index: true },
-          { path: 'five', element: <PageFive /> },
-          { path: 'account', element: <UserAccountPage /> },
+          {element: <PageFour/>, index: true},
+          {path: 'five', element: <PageFive/>},
+          {path: 'account', element: <UserAccountPage/>},
         ],
       },
     ],
