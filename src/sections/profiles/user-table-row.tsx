@@ -1,3 +1,4 @@
+import React from 'react';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
@@ -7,6 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
+import ButtonBase from '@mui/material/ButtonBase';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -30,19 +32,21 @@ type Props = {
 };
 
 export default function UserTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-}: Props) {
-  const { name, avatarUrl,profile, status, email, phoneNumber } = row;
+                                       row,
+                                       selected,
+                                       onEditRow,
+                                       onSelectRow,
+                                       onDeleteRow,
+                                     }: Props) {
+  const { name, avatarUrl, profile, status, email, phoneNumber } = row;
 
   const confirm = useBoolean();
-
   const quickEdit = useBoolean();
-
   const popover = usePopover();
+
+  const handleRowClick = () => {
+    onEditRow(); // Define what should happen when the row is clicked
+  };
 
   return (
     <>
@@ -52,35 +56,46 @@ export default function UserTableRow({
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
-
-          <ListItemText
-            primary={name}
-            secondary={email}
-            primaryTypographyProps={{ typography: 'body2' }}
-            secondaryTypographyProps={{
-              component: 'span',
-              color: 'text.disabled',
-            }}
-          />
+          <ButtonBase sx={{ display: 'flex', alignItems: 'center', width: '100%' }} onClick={handleRowClick}>
+            <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
+            <ListItemText
+              primary={name}
+              secondary={email}
+              primaryTypographyProps={{ typography: 'body2' }}
+              secondaryTypographyProps={{
+                component: 'span',
+                color: 'text.disabled',
+              }}
+            />
+          </ButtonBase>
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{phoneNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
+            {phoneNumber}
+          </ButtonBase>
+        </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{profile}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
+            {profile}
+          </ButtonBase>
+        </TableCell>
 
         <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (status === 'active' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'banned' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
+          <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
+            <Label
+              variant="soft"
+              color={
+                (status === 'active' && 'success') ||
+                (status === 'pending' && 'warning') ||
+                (status === 'banned' && 'error') ||
+                'default'
+              }
+            >
+              {status}
+            </Label>
+          </ButtonBase>
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>

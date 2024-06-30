@@ -35,7 +35,7 @@ export default function ProfileEditPage({ id }: Props) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Edit"
+        heading={currentUser.name}
         links={[
           {
             name: 'Dashboard',
