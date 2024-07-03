@@ -1,40 +1,32 @@
 import * as Yup from 'yup';
-import React, {useMemo, useCallback, useState} from 'react';
-import {useForm, Controller} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
+import React, {useMemo, useState, useCallback} from 'react';
 
 import Box from '@mui/material/Box';
+import Tab from "@mui/material/Tab";
 import Card from '@mui/material/Card';
+import Tabs from "@mui/material/Tabs";
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
+import {Container} from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
 import {paths} from 'src/routes/paths';
 import {useRouter} from 'src/routes/hooks';
 
-import {fData} from 'src/utils/format-number';
-
 import {countries} from 'src/assets/data';
 
-import Label from 'src/components/label';
 import {useSnackbar} from 'src/components/snackbar';
 import FormProvider, {
-  RHFSwitch,
   RHFTextField,
-  RHFUploadAvatar,
   RHFAutocomplete,
 } from 'src/components/hook-form';
 
 import {IUserItem} from 'src/types/user';
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+
 import Iconify from "../../components/iconify";
-import {Container} from "@mui/material";
-import AccountGeneral from "../account/account-general";
 import AccountNotifications from "../account/account-notifications";
 import AccountChangePassword from "../account/account-change-password";
 
@@ -154,9 +146,7 @@ export default function UserNewEditForm({currentUser}: Props) {
   return (
 
     <Container>
-      <Typography variant="h6" gutterBottom>
-
-      </Typography>
+      <Typography variant="h6" gutterBottom />
       <Tabs
         value={currentTab}
         onChange={handleChangeTab}
@@ -213,9 +203,7 @@ export default function UserNewEditForm({currentUser}: Props) {
             </Card>
           </Grid>
 
-          <Grid xs={12} md={8}>
-
-          </Grid>
+          <Grid xs={12} md={8} />
         </Grid>
       </FormProvider>}
 
