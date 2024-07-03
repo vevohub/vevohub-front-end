@@ -16,7 +16,7 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import { AuthProvider } from 'src/auth/context/jwt';
 
 // ----------------------------------------------------------------------
-
+//
 export default function App() {
   const charAt = `
 
