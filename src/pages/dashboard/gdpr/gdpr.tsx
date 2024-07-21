@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import TwoView from 'src/sections/gdpr/view';
+import GdprView from 'src/sections/gdpr/gdprview';
 
 // ----------------------------------------------------------------------
 
@@ -8,10 +8,10 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Two</title>
+        <title> GDPR </title>
       </Helmet>
 
-      <TwoView />
+      <GdprView />
     </>
   );
 }

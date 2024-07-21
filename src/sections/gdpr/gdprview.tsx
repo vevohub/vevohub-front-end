@@ -7,12 +7,12 @@ import { useSettingsContext } from 'src/components/settings';
 
 // ----------------------------------------------------------------------
 
-export default function ThreeView() {
+export default function GdprView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-      <Typography variant="h4"> Page Three </Typography>
+      <Typography variant="h4"> Generate GDPR </Typography>
 
       <Box
         sx={{

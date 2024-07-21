@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import {useMemo} from 'react';
 
-import { paths } from 'src/routes/paths';
+import {paths} from 'src/routes/paths';
 
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 
 const icon = (name: string) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{width: 1, height: 1}}/>
   // OR
   // <Iconify icon="fluent:mail-24-filled" />
   // https://icon-sets.iconify.design/solar/
@@ -44,18 +44,21 @@ const ICONS = {
 // ----------------------------------------------------------------------
 
 export function useNavData() {
-  const data = useMemo(
+  return useMemo(
     () => [
       // OVERVIEW
       // ----------------------------------------------------------------------
       {
-        subheader: 'overview v5.7.0',
+        subheader: 'Dashboard',
         items: [
-          { title: 'profiles', path: paths.dashboard.root, icon: ICONS.dashboard },
-          { title: 'GDPR', path: paths.dashboard.two, icon: ICONS.ecommerce },
+          {title: 'profiles', path: paths.dashboard.root, icon: ICONS.dashboard},
+          {title: 'jobs', path: paths.dashboard.two, icon: ICONS.job},
           {
-            title: 'three',
-            path: paths.dashboard.three,
+            title: 'GDPR', path: paths.dashboard.two, icon: ICONS.ecommerce
+          },
+          {
+            title: 'Reporting',
+            path: paths.dashboard.reporting,
             icon: ICONS.analytics,
           },
         ],
@@ -71,8 +74,8 @@ export function useNavData() {
             path: paths.dashboard.group.root,
             icon: ICONS.user,
             children: [
-              { title: 'four', path: paths.dashboard.group.root },
-              { title: 'five', path: paths.dashboard.group.five },
+              // { title: 'four', path: paths.dashboard.group.root },
+              // { title: 'five', path: paths.dashboard.group.five },
               { title: 'account', path: paths.dashboard.group.account },
             ],
           },
@@ -81,6 +84,4 @@ export function useNavData() {
     ],
     []
   );
-
-  return data;
 }
