@@ -1,5 +1,5 @@
 import isEqual from "lodash/isEqual";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { alpha } from '@mui/material/styles';
 import {
@@ -33,6 +33,8 @@ import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
 import UserTableFiltersResult from '../user-table-filters-result';
 
+import { useQuery, useQueryClient } from 'react-query';
+
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
@@ -56,33 +58,41 @@ export default function ProfileListView() {
   const router = useRouter();
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState<IUserItem[]>([]);
+  const queryClient = useQueryClient();
+
   const [roles, setRoles] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
-  // Fetch Candidates
-  useEffect(() => {
-    fetchCandidates(page, size).then(apiData => {
-      const userItems = transformApiDataToUserItems(apiData.content);
-      setTableData(userItems);
-      setTotalElements(apiData.totalElements);
-      setTotalPages(apiData.totalPages);
-    }).catch(error => {
-      console.error('Error fetching candidates:', error);
-    });
-  }, [page, size]); // Add page and size as dependencies
-
-  // Roles Filters
-  useEffect(() => {
-    fetchRoles().then(fetchedRoles => {
-      setRoles(fetchedRoles);
-    });
-  }, []);
-
   const [filters, setFilters] = useState(defaultFilters);
+
+  // Fetch Candidates using React Query
+  const { data: apiData, error, isLoading, isFetching } = useQuery(
+    ['candidates', page, size],
+    () => fetchCandidates(page, size),
+    {
+      staleTime: 4 * 60 * 1000, // 4 minutes
+      cacheTime: 4 * 60 * 1000, // 4 minutes
+      initialData: () => {
+        // Provide initial data if available in the cache
+        return queryClient.getQueryData(['candidates', page, size]);
+      },
+      onSuccess: (data) => {
+        setTotalElements(data.totalElements);
+        setTotalPages(data.totalPages);
+      },
+    }
+  );
+
+  const tableData = apiData ? transformApiDataToUserItems(apiData.content) : [];
+
+  // Fetch Roles
+  useQuery('roles', fetchRoles, {
+    onSuccess: (data) => {
+      setRoles(data);
+    },
+  });
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -118,23 +128,33 @@ export default function ProfileListView() {
 
   const handleDeleteRow = useCallback(
     (id: string) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+      const updatedData = tableData.filter((row) => row.id !== id);
       enqueueSnackbar('Delete success!');
-      setTableData(deleteRow);
+      queryClient.setQueryData(['candidates', page, size], (oldData: any) => {
+        return {
+          ...oldData,
+          content: oldData.content.filter((row: IUserItem) => row.id !== id),
+        };
+      });
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [dataInPage.length, enqueueSnackbar, table, tableData],
+    [dataInPage.length, enqueueSnackbar, page, size, queryClient, tableData],
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const updatedData = tableData.filter((row) => !table.selected.includes(row.id));
     enqueueSnackbar('Delete success!');
-    setTableData(deleteRows);
+    queryClient.setQueryData(['candidates', page, size], (oldData: any) => {
+      return {
+        ...oldData,
+        content: oldData.content.filter((row: IUserItem) => !table.selected.includes(row.id)),
+      };
+    });
     table.onUpdatePageDeleteRows({
       totalRowsInPage: dataInPage.length,
       totalRowsFiltered: dataFiltered.length,
     });
-  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, table, tableData]);
+  }, [dataFiltered.length, dataInPage.length, enqueueSnackbar, page, size, queryClient, table.selected, tableData]);
 
   const handleEditRow = useCallback(
     (id: string) => {
