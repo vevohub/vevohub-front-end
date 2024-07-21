@@ -7,7 +7,7 @@ import { useSettingsContext } from 'src/components/settings';
 
 // ----------------------------------------------------------------------
 
-export default function FourView() {
+export default function UserManagementView() {
   const settings = useSettingsContext();
 
   return (

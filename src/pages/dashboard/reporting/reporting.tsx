@@ -1,17 +1,18 @@
 import { Helmet } from 'react-helmet-async';
+import ReportingView from "../../../sections/reporting/reportingview";
 
-import ThreeView from 'src/sections/three/view';
+
 
 // ----------------------------------------------------------------------
 
-export default function Page() {
+export default function ReportingPage() {
   return (
     <>
       <Helmet>
         <title> Dashboard: Three</title>
       </Helmet>
 
-      <ThreeView />
+      <ReportingView />
     </>
   );
 }
