@@ -1,20 +1,14 @@
 import isEqual from "lodash/isEqual";
 import React, { useState, useCallback } from 'react';
-
 import { alpha } from '@mui/material/styles';
 import {
-  Tab, Tabs, Card, Table, Button, Tooltip,
-  Container, TableBody, IconButton, TableContainer
+  Tab, Tabs, Card, Table, Button, Tooltip, Container, TableBody, IconButton, TableContainer
 } from '@mui/material';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useBoolean } from 'src/hooks/use-boolean';
-
 import { fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems } from 'src/_mock';
-
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -26,13 +20,10 @@ import {
   useTable, emptyRows, TableNoData, getComparator, TableEmptyRows,
   TableHeadCustom, TableSelectedAction, TablePaginationCustom,
 } from 'src/components/table';
-
 import { IUserItem, IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
-
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
 import UserTableFiltersResult from '../user-table-filters-result';
-
 import { useQuery, useQueryClient } from 'react-query';
 
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
@@ -51,16 +42,33 @@ const defaultFilters: IUserTableFilters = {
   status: 'all',
 };
 
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .replace(/\s\w/g, (char) => char.toUpperCase());
+};
+
+const normalizeData = (data: (string | null)[]): string[] => {
+  const normalizedSet = new Set<string>();
+  data.forEach(item => {
+    if (item) {
+      normalizedSet.add(normalizeText(item));
+    }
+  });
+  return Array.from(normalizedSet);
+};
+
 export default function ProfileListView() {
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
-
   const queryClient = useQueryClient();
 
   const [roles, setRoles] = useState<string[]>([]);
+  const [filteredRoles, setFilteredRoles] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
@@ -90,7 +98,9 @@ export default function ProfileListView() {
   // Fetch Roles
   useQuery('roles', fetchRoles, {
     onSuccess: (data) => {
-      setRoles(data);
+      const normalizedData = normalizeData(data);
+      setRoles(normalizedData);
+      setFilteredRoles(normalizedData); // Initialize filtered roles with all roles
     },
   });
 
@@ -215,7 +225,7 @@ export default function ProfileListView() {
           >
             {STATUS_OPTIONS.map((tab) => (
               <Tab
-                key={tab.value}
+                key={tab.value} // Ensure each Tab has a unique key
                 iconPosition="end"
                 value={tab.value}
                 label={tab.label}
@@ -297,7 +307,7 @@ export default function ProfileListView() {
                     )
                     .map((row) => (
                       <UserTableRow
-                        key={row.id}
+                        key={row.id} // Ensure each UserTableRow has a unique key
                         row={row}
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
