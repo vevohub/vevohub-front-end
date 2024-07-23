@@ -1,5 +1,4 @@
-import { useCallback } from 'react';
-
+import React, { useState, useCallback, ChangeEvent } from 'react';
 import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
@@ -7,31 +6,27 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-
+import Autocomplete from '@mui/material/Autocomplete';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-
 import { IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   filters: IUserTableFilters;
   onFilters: (name: string, value: IUserTableFilterValue) => void;
-  //
   roleOptions: string[];
 };
 
 export default function UserTableToolbar({
-  filters,
-  onFilters,
-  //
-  roleOptions,
-}: Props) {
+                                           filters,
+                                           onFilters,
+                                           roleOptions = [],
+                                         }: Props) {
   const popover = usePopover();
+  const [roleSearch, setRoleSearch] = useState<string>('');
 
   const handleFilterName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,15 +35,13 @@ export default function UserTableToolbar({
     [onFilters]
   );
 
-  const handleFilterRole = useCallback(
-    (event: SelectChangeEvent<string[]>) => {
-      onFilters(
-        'role',
-        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
-      );
-    },
-    [onFilters]
-  );
+  const handleRoleChange = (event: React.SyntheticEvent, value: string[]) => {
+    onFilters('role', value);
+  };
+
+  const handleRoleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setRoleSearch(event.target.value);
+  };
 
   return (
     <>
@@ -70,27 +63,46 @@ export default function UserTableToolbar({
             width: { xs: 1, md: 200 },
           }}
         >
-          <InputLabel>Role</InputLabel>
-
-          <Select
+          <Autocomplete
             multiple
+            options={roleOptions}
             value={filters.role}
-            onChange={handleFilterRole}
-            input={<OutlinedInput label="Role" />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
-            MenuProps={{
-              PaperProps: {
-                sx: { maxHeight: 240 },
-              },
+            onChange={handleRoleChange}
+            inputValue={roleSearch}
+            onInputChange={(event, newInputValue) => {
+              setRoleSearch(newInputValue);
             }}
-          >
-            {roleOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size="small" checked={filters.role.includes(option)} />
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Role"
+                placeholder="Search roles..."
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <>
+                      <InputAdornment position="start">
+                        <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                      </InputAdornment>
+                      {params.InputProps.startAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
+            renderOption={(props, option, { selected }) => (
+              <MenuItem {...props}>
+                <Checkbox
+                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                  checkedIcon={<CheckBoxIcon fontSize="small" />}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
                 {option}
               </MenuItem>
-            ))}
-          </Select>
+            )}
+          />
         </FormControl>
 
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
@@ -107,7 +119,6 @@ export default function UserTableToolbar({
               ),
             }}
           />
-
           <IconButton onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -121,6 +132,7 @@ export default function UserTableToolbar({
         sx={{ width: 140 }}
       >
         <MenuItem
+          key="print"
           onClick={() => {
             popover.onClose();
           }}
@@ -130,6 +142,7 @@ export default function UserTableToolbar({
         </MenuItem>
 
         <MenuItem
+          key="import"
           onClick={() => {
             popover.onClose();
           }}
@@ -139,6 +152,7 @@ export default function UserTableToolbar({
         </MenuItem>
 
         <MenuItem
+          key="export"
           onClick={() => {
             popover.onClose();
           }}

@@ -1,35 +1,26 @@
 import { useCallback } from 'react';
-
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Stack, { StackProps } from '@mui/material/Stack';
-
 import Iconify from 'src/components/iconify';
-
 import { IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
-
-// ----------------------------------------------------------------------
 
 type Props = StackProps & {
   filters: IUserTableFilters;
   onFilters: (name: string, value: IUserTableFilterValue) => void;
-  //
   onResetFilters: VoidFunction;
-  //
   results: number;
 };
 
 export default function UserTableFiltersResult({
-  filters,
-  onFilters,
-  //
-  onResetFilters,
-  //
-  results,
-  ...other
-}: Props) {
+                                                 filters,
+                                                 onFilters,
+                                                 onResetFilters,
+                                                 results,
+                                                 ...other
+                                               }: Props) {
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
@@ -41,7 +32,6 @@ export default function UserTableFiltersResult({
   const handleRemoveRole = useCallback(
     (inputValue: string) => {
       const newValue = filters.role.filter((item) => item !== inputValue);
-
       onFilters('role', newValue);
     },
     [filters.role, onFilters]
@@ -59,21 +49,21 @@ export default function UserTableFiltersResult({
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
         {filters.status !== 'all' && (
           <Block label="Status:">
-            <Chip size="small" label={filters.status} onDelete={handleRemoveStatus} />
+            <Chip key="status-chip" size="small" label={filters.status} onDelete={handleRemoveStatus} />
           </Block>
         )}
 
         {!!filters.role.length && (
           <Block label="Role:">
             {filters.role.map((item) => (
-              <Chip key={item} label={item} size="small" onDelete={() => handleRemoveRole(item)} />
+              <Chip key={`role-chip-${item}`} label={item} size="small" onDelete={() => handleRemoveRole(item)} />
             ))}
           </Block>
         )}
 
         {!!filters.name && (
           <Block label="Keyword:">
-            <Chip label={filters.name} size="small" onDelete={handleRemoveKeyword} />
+            <Chip key="keyword-chip" label={filters.name} size="small" onDelete={handleRemoveKeyword} />
           </Block>
         )}
 
@@ -88,8 +78,6 @@ export default function UserTableFiltersResult({
     </Stack>
   );
 }
-
-// ----------------------------------------------------------------------
 
 type BlockProps = StackProps & {
   label: string;
