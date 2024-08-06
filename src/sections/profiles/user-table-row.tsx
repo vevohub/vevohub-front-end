@@ -39,14 +39,14 @@ export default function UserTableRow({
                                        onSelectRow,
                                        onDeleteRow,
                                      }: Props) {
-  const { name, avatarUrl, profile, status, email, phoneNumber } = row;
+  const { name, avatarUrl, profile, status, email, phoneNumber, linkedinUrl } = row;
 
   const confirm = useBoolean();
   const quickEdit = useBoolean();
   const popover = usePopover();
 
   const handleRowClick = () => {
-    onEditRow(); // Define what should happen when the row is clicked
+    onEditRow();
   };
 
   return (
@@ -56,20 +56,19 @@ export default function UserTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <TableCell>
           <ButtonBase sx={{ display: 'flex', alignItems: 'center', width: '100%' }} onClick={handleRowClick}>
             <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
             <ListItemText
               primary={name}
               secondary={email}
-              primaryTypographyProps={{ typography: 'body2' }}
-              secondaryTypographyProps={{
-                component: 'span',
-                color: 'text.disabled',
-              }}
+              primaryTypographyProps={{ variant: 'body2', sx: { fontWeight: 'normal' } }}
+              secondaryTypographyProps={{ variant: 'caption', color: 'text.disabled' }}
+              sx={{ m: 0 }}
             />
           </ButtonBase>
         </TableCell>
+
 
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
@@ -97,6 +96,14 @@ export default function UserTableRow({
               {status}
             </Label>
           </ButtonBase>
+        </TableCell>
+
+        <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+          <Tooltip title="LinkedIn Profile" placement="top" arrow>
+            <IconButton component="a" href={linkedinUrl} target="_blank" rel="noopener noreferrer">
+              <Iconify icon="mdi:linkedin" />
+            </IconButton>
+          </Tooltip>
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>

@@ -105,6 +105,7 @@ export type IUserItem = {
   avatarUrl: string;
   phoneNumber: string;
   isVerified: boolean;
+  linkedinUrl:string;
 };
 
 
