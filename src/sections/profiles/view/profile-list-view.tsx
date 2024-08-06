@@ -1,8 +1,8 @@
-import isEqual from "lodash/isEqual";
+import isEqual from 'lodash/isEqual';
 import React, { useState, useCallback } from 'react';
 import { alpha } from '@mui/material/styles';
 import {
-  Tab, Tabs, Card, Table, Button, Tooltip, Container, TableBody, IconButton, TableContainer
+  Tab, Tabs, Card, Table, Button, Tooltip, Container, TableBody, IconButton, TableContainer,
 } from '@mui/material';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -33,7 +33,8 @@ const TABLE_HEAD = [
   { id: 'phoneNumber', label: 'Phone Number', width: 180 },
   { id: 'role', label: 'Role', width: 180 },
   { id: 'status', label: 'Status', width: 100 },
-  { id: '', width: 88 },
+  { id: 'linkedin', label: 'LinkedIn', width: 100 },
+  { id: 'actions', label: 'Actions', width: 100 }
 ];
 
 const defaultFilters: IUserTableFilters = {
@@ -70,7 +71,7 @@ export default function ProfileListView() {
   const [roles, setRoles] = useState<string[]>([]);
   const [filteredRoles, setFilteredRoles] = useState<string[]>([]);
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
+  const [size, setSize] = useState(15); // Set default size to 15
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [filters, setFilters] = useState(defaultFilters);
@@ -191,7 +192,7 @@ export default function ProfileListView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <Container maxWidth="xl">
         <CustomBreadcrumbs
           heading="Profiles"
           links={[
@@ -225,7 +226,7 @@ export default function ProfileListView() {
           >
             {STATUS_OPTIONS.map((tab) => (
               <Tab
-                key={tab.value} // Ensure each Tab has a unique key
+                key={tab.value}
                 iconPosition="end"
                 value={tab.value}
                 label={tab.label}
@@ -335,7 +336,7 @@ export default function ProfileListView() {
             onPageChange={handleChangePage}
             onChangeDense={table.onChangeDense}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 50]} // Allow user to select up to 50 rows per page
           />
         </Card>
       </Container>

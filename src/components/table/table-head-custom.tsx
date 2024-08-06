@@ -34,20 +34,20 @@ type Props = {
 };
 
 export default function TableHeadCustom({
-  order,
-  orderBy,
-  rowCount = 0,
-  headLabel,
-  numSelected = 0,
-  onSort,
-  onSelectAllRows,
-  sx,
-}: Props) {
+                                          order,
+                                          orderBy,
+                                          rowCount = 0,
+                                          headLabel,
+                                          numSelected = 0,
+                                          onSort,
+                                          onSelectAllRows,
+                                          sx,
+                                        }: Props) {
   return (
     <TableHead sx={sx}>
       <TableRow>
         {onSelectAllRows && (
-          <TableCell padding="checkbox">
+          <TableCell padding="checkbox" align="center">
             <Checkbox
               indeterminate={!!numSelected && numSelected < rowCount}
               checked={!!rowCount && numSelected === rowCount}

@@ -13,12 +13,12 @@ type Props = {
 };
 
 export default function TablePaginationCustom({
-  dense,
-  onChangeDense,
-  rowsPerPageOptions = [5, 10, 25],
-  sx,
-  ...other
-}: Props & TablePaginationProps) {
+                                                dense,
+                                                onChangeDense,
+                                                rowsPerPageOptions = [5, 10, 15, 25], // Include 15 here
+                                                sx,
+                                                ...other
+                                              }: Props & TablePaginationProps) {
   return (
     <Box sx={{ position: 'relative', ...sx }}>
       <TablePagination
