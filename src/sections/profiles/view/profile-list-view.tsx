@@ -106,7 +106,7 @@ export default function ProfileListView() {
   // Fetch candidates with filters, including search and pagination
   const { data: apiData, error, isLoading, isFetching } = useQuery(
     ['candidates', page, size, filters],
-    () => fetchCandidates(page, size, filters.role, filters.name, filters.status),
+    () => fetchCandidates(page, size, filters.role, filters.name),
     {
       staleTime: 4 * 60 * 1000,
       cacheTime: 4 * 60 * 1000,

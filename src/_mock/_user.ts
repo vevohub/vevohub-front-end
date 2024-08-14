@@ -14,8 +14,7 @@ export const USER_STATUS_OPTIONS = [
 
 
 export async function fetchCandidates(page: number, size: number, profiles?: string[],
-                                      fullNameCandidate?: string,
-                                      namePattern?: string): Promise<candidatesResponseAPI> {
+                                      fullNameCandidate?: string): Promise<candidatesResponseAPI> {
   try {
     const response = await axiosInstance.get<candidatesResponseAPI>('http://localhost:8080/candidates', {
       params: {
@@ -23,7 +22,6 @@ export async function fetchCandidates(page: number, size: number, profiles?: str
         size,
         profiles: profiles?.length ? profiles : undefined,// Only include if profiles are provided
         fullNameCandidate, // Only include if fullNameCandidate is provided
-        namePattern // Only include if namePattern is provided
       }
     });
     return response.data;
