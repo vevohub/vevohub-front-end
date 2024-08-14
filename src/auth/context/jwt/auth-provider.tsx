@@ -87,7 +87,6 @@ export function AuthProvider({ children }: Props) {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
 
       if (accessToken && isValidToken(accessToken)) {
-        console.log('AICI');
         setSession(accessToken);
 
         const res = await axios.get(endpoints.auth.me);
@@ -217,8 +216,5 @@ export function AuthProvider({ children }: Props) {
     }),
     [login, logout, register, state.user, status],
   );
-  console.log('pula');
-  console.log(memoizedValue, 'memoizedValue');
-  console.log(children, 'children');
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
 }

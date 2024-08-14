@@ -13,10 +13,18 @@ export const USER_STATUS_OPTIONS = [
 ];
 
 
-export async function fetchCandidates(page: number, size: number): Promise<candidatesResponseAPI> {
+export async function fetchCandidates(page: number, size: number, profiles?: string[],
+                                      fullNameCandidate?: string,
+                                      namePattern?: string): Promise<candidatesResponseAPI> {
   try {
     const response = await axiosInstance.get<candidatesResponseAPI>('http://localhost:8080/candidates', {
-      params: { page, size }
+      params: {
+        page,
+        size,
+        profiles: profiles?.length ? profiles : undefined,// Only include if profiles are provided
+        fullNameCandidate, // Only include if fullNameCandidate is provided
+        namePattern // Only include if namePattern is provided
+      }
     });
     return response.data;
   } catch (error) {
@@ -24,6 +32,7 @@ export async function fetchCandidates(page: number, size: number): Promise<candi
     throw error;
   }
 }
+
 export async function fetchRoles(): Promise<string[]> {
   try {
     const response = await axiosInstance.get('http://localhost:8080/candidates/positions');
@@ -34,20 +43,27 @@ export async function fetchRoles(): Promise<string[]> {
   }
 }
 
-export function transformApiDataToUserItems(apiData: IApiProfile[]): IUserItem[] {
+export function transformApiDataToUserItems(apiData: IApiProfile[] = []): IUserItem[] {
+  if (!apiData || apiData.length === 0) {
+    console.log("apiData is undefined or empty:", apiData);
+    return [];
+  }
+
+  console.log(apiData);
   return apiData.map(apiUser => ({
     id: apiUser.id.toString(),
     name: apiUser.fullNameCandidate || 'Default Name',
     city: apiUser.locationCity || 'Default City',
-    profile: apiUser.profile || 'Default Role',  // Since role isn't provided by API, set a default or another logic
+    profile: apiUser.profile || 'Default Role',
     email: apiUser.email || 'no-email@example.com',
     status: apiUser.status || 'pending',
-    address: 'Default Address',  // Not provided by API, use a placeholder
-    country: 'Default Country',  // Not provided by API, use a placeholder
+    address: 'Default Address',
+    country: 'Default Country',
     financial_expectations: apiUser.financialExpectations || '0',
-    avatarUrl: 'Default Avatar URL',  // Not provided by API, use a placeholder
+    avatarUrl: 'Default Avatar URL',
     phoneNumber: apiUser.contactNo,
-    isVerified: true,  // Not provided by API, assume a default
+    isVerified: true,
+    linkedinUrl: ''
   }));
 }
 
@@ -67,14 +83,14 @@ export const fetchUserById = async (id: string): Promise<IUserItem> => {
       financial_expectations: apiUser.financialExpectations || '0',
       avatarUrl: 'Default Avatar URL', // Placeholder
       phoneNumber: apiUser.contactNo,
-      isVerified: true, // Default value
+      isVerified: true,
+      linkedinUrl: ''
     };
   } catch (error) {
     console.error('Error fetching user by ID', error);
     throw error;
   }
 };
-
 
 
 // Assuming you have a baseURL for your API

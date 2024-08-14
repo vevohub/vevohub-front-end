@@ -1,11 +1,15 @@
 import React from 'react';
-import Container from '@mui/material/Container';
 import {useQuery} from 'react-query';
 
+import Container from '@mui/material/Container';
+
 import {paths} from 'src/routes/paths';
+
 import {useSettingsContext} from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+
 import {IUserItem} from 'src/types/user';
+
 import {fetchUserById} from "../../../_mock";
 import UserNewEditForm from '../user-new-edit-form';
 import {queryClient} from "../../../hooks/queryClient";
@@ -24,10 +28,10 @@ const ProfileEditPage = ({ id }: Props) => {
     {
       staleTime: 4 * 60 * 1000, // 4 minutes
       cacheTime: 4 * 60 * 1000, // 4 minutes
-      initialData: () => {
+      initialData: () => 
         // Provide initial data if available in the cache
-        return queryClient.getQueryData<IUserItem>(['user', id]);
-      },
+         queryClient.getQueryData<IUserItem>(['user', id])
+      ,
     }
   );
 
