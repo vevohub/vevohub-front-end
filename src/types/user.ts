@@ -105,7 +105,7 @@ export type IUserItem = {
   avatarUrl: string;
   phoneNumber: string;
   isVerified: boolean;
-  linkedinUrl:string;
+  linkedinUrl: string;
 };
 
 
@@ -118,6 +118,7 @@ export type IApiProfile = {
   contactNo: string;
   email: string | null;
   status: string | null;
+  linkedinUrl: string | null;
 }
 
 export type IUserAccount = {

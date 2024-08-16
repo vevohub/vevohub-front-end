@@ -1,7 +1,8 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import TextField from '@mui/material/TextField';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
 
 interface ProfileSearchProps {
   data: string[];
@@ -9,12 +10,10 @@ interface ProfileSearchProps {
 }
 
 // Utility function to normalize text (capitalize words)
-const normalizeText = (text: string): string => {
-  return text
+const normalizeText = (text: string): string => text
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase())
     .replace(/\s\w/g, (char) => char.toUpperCase());
-};
 
 const ProfileSearch: React.FC<ProfileSearchProps> = ({ data, setFilteredData }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');

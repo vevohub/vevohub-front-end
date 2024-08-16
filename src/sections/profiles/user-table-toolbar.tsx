@@ -1,17 +1,19 @@
-import React, { useState, useCallback, ChangeEvent } from 'react';
+import React, { useState, useCallback } from 'react';
+
 import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
-import InputAdornment from '@mui/material/InputAdornment';
 import Autocomplete from '@mui/material/Autocomplete';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import InputAdornment from '@mui/material/InputAdornment';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+
 import { IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
 
 type Props = {
@@ -37,10 +39,6 @@ export default function UserTableToolbar({
 
   const handleRoleChange = (event: React.SyntheticEvent, value: string[]) => {
     onFilters('role', value);
-  };
-
-  const handleRoleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setRoleSearch(event.target.value);
   };
 
   return (
