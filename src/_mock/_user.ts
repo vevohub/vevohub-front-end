@@ -13,14 +13,14 @@ export const USER_STATUS_OPTIONS = [
 ];
 
 
-export async function fetchCandidates(page: number, size: number, profiles?: string[],
+export async function fetchCandidates(page: number, size: number, profiles: string[],
                                       fullNameCandidate?: string): Promise<candidatesResponseAPI> {
   try {
     const response = await axiosInstance.get<candidatesResponseAPI>('http://localhost:8080/candidates', {
       params: {
         page,
         size,
-        profiles: profiles?.length ? profiles : undefined,// Only include if profiles are provided
+        profiles: profiles.join(','),
         fullNameCandidate, // Only include if fullNameCandidate is provided
       }
     });

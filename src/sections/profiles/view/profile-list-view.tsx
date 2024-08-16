@@ -1,7 +1,7 @@
-import React, {useState, useCallback} from 'react';
-import {useQuery, useQueryClient} from 'react-query';
+import React, { useState, useCallback } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 
-import {alpha} from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
 import {
   Tab,
   Card,
@@ -15,32 +15,31 @@ import {
   TableContainer,
 } from '@mui/material';
 
-import {paths} from 'src/routes/paths';
-import {useRouter} from 'src/routes/hooks';
-import {RouterLink} from 'src/routes/components';
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+import { RouterLink } from 'src/routes/components';
 
-import {useBoolean} from 'src/hooks/use-boolean';
+import { useBoolean } from 'src/hooks/use-boolean';
 
-import {fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems} from 'src/_mock';
+import { fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems } from 'src/_mock';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import {useSnackbar} from 'src/components/snackbar';
-import {ConfirmDialog} from 'src/components/custom-dialog';
-import {useSettingsContext} from 'src/components/settings';
+import { useSnackbar } from 'src/components/snackbar';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
   useTable,
-  emptyRows,
   TableNoData,
   TableEmptyRows,
   TableHeadCustom,
   TableSelectedAction,
-  TablePaginationCustom,
+  TablePaginationCustom, emptyRows,
 } from 'src/components/table';
 
-import {IUserItem, IUserTableFilters, IUserTableFilterValue} from 'src/types/user';
+import { IUserItem, IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
 
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
@@ -233,15 +232,13 @@ export default function ProfileListView() {
 
         <UserTableToolbar filters={filters} onFilters={handleFilters} roleOptions={roles} />
 
-        {onreset && (
-          <UserTableFiltersResult
-            filters={filters}
-            onFilters={handleFilters}
-            onResetFilters={handleResetFilters}
-            results={tableData.length}
-            sx={{ p: 2.5, pt: 0 }}
-          />
-        )}
+        <UserTableFiltersResult
+          filters={filters}
+          onFilters={handleFilters}
+          onResetFilters={handleResetFilters}
+          results={tableData.length}
+          sx={{ p: 2.5, pt: 0 }}
+        />
 
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <TableSelectedAction
