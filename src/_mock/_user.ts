@@ -16,14 +16,18 @@ export const USER_STATUS_OPTIONS = [
 export async function fetchCandidates(page: number, size: number, profiles: string[],
                                       fullNameCandidate?: string): Promise<candidatesResponseAPI> {
   try {
-    const response = await axiosInstance.get<candidatesResponseAPI>('http://localhost:8080/candidates', {
-      params: {
-        page,
-        size,
-        profiles: profiles.join(','),
-        fullNameCandidate, // Only include if fullNameCandidate is provided
-      }
-    });
+    // Create a params object and filter out empty or undefined values
+    const params: any = {
+      page,
+      size,
+      profiles: profiles.length > 0 ? profiles.join(',') : undefined,
+    };
+
+    if (fullNameCandidate) {
+      params.fullNameCandidate = fullNameCandidate;
+    }
+
+    const response = await axiosInstance.get<candidatesResponseAPI>('http://localhost:8080/candidates', {params});
     return response.data;
   } catch (error) {
     console.error('Error fetching candidates', error);
@@ -50,18 +54,24 @@ export function transformApiDataToUserItems(apiData: IApiProfile[] = []): IUserI
   console.log(apiData);
   return apiData.map(apiUser => ({
     id: apiUser.id.toString(),
-    name: apiUser.fullNameCandidate || 'Default Name',
+    first_name: `${apiUser.first_name ?? ''}`.trim() || 'First Name Last Name',
+    last_name: `${apiUser.last_name ?? ''}`.trim() || 'First Name Last Name',
     city: apiUser.locationCity || 'Default City',
-    profile: apiUser.profile || 'Default Role',
+    role: apiUser.profile || 'Default Role',
     email: apiUser.email || 'no-email@example.com',
     status: apiUser.status || 'pending',
     address: 'Default Address',
     country: 'Default Country',
-    financial_expectations: apiUser.financialExpectations || '0',
+    financial_expectations: apiUser.financial_expectations || '?',
     avatarUrl: 'Default Avatar URL',
     phoneNumber: apiUser.contactNo,
     isVerified: true,
-    linkedinUrl: ''
+    trello_description: {
+      beautifiedDescription: '',
+      linkedinLink: '',
+    },
+    linkedin_link: '',
+    trelloUrl: ''
   }));
 }
 
@@ -69,11 +79,15 @@ export const fetchUserById = async (id: string): Promise<IUserItem> => {
   try {
     const response = await axiosInstance.get(`http://localhost:8080/candidates/${id}`);
     const apiUser = response.data;
+
+    console.log('TEST-THIS')
+    console.log(apiUser);
     return {
       id: apiUser.id.toString(),
-      name: apiUser.fullNameCandidate || 'Default Name',
+      first_name: apiUser.first_name || 'First Name',
+      last_name: apiUser.last_name || 'Last name ',
       city: apiUser.locationCity || 'Default City',
-      profile: apiUser.profile || 'Default Role',
+      role: apiUser.profile || 'Default Role',
       email: apiUser.email || 'no-email@example.com',
       status: apiUser.status || 'pending',
       address: 'Default Address', // Placeholder
@@ -82,7 +96,12 @@ export const fetchUserById = async (id: string): Promise<IUserItem> => {
       avatarUrl: 'Default Avatar URL', // Placeholder
       phoneNumber: apiUser.contactNo,
       isVerified: true,
-      linkedinUrl: ''
+      trello_description: {
+        linkedinLink: apiUser.trello_description?.linkedinLink || '',  // Ensure to get it from the correct path
+        beautifiedDescription: apiUser.trello_description?.beautifiedDescription || ''  // Ensure to get it from the correct path
+      },
+      linkedin_link: apiUser.linkedin_link || '',
+      trelloUrl: ''
     };
   } catch (error) {
     console.error('Error fetching user by ID', error);
