@@ -11,14 +11,14 @@ import IconButton from '@mui/material/IconButton';
 import ButtonBase from '@mui/material/ButtonBase';
 import ListItemText from '@mui/material/ListItemText';
 
-import { useBoolean } from 'src/hooks/use-boolean';
+import {useBoolean} from 'src/hooks/use-boolean';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import {ConfirmDialog} from 'src/components/custom-dialog';
+import CustomPopover, {usePopover} from 'src/components/custom-popover';
 
-import { IUserItem } from 'src/types/user';
+import {IUserItem} from 'src/types/user';
 
 import UserQuickEditForm from './user-quick-edit-form';
 
@@ -39,7 +39,17 @@ export default function UserTableRow({
                                        onSelectRow,
                                        onDeleteRow,
                                      }: Props) {
-  const { name, avatarUrl, profile, status, email, phoneNumber, linkedinUrl } = row;
+  const {
+    first_name,
+    last_name,
+    avatarUrl,
+    role,
+    status,
+    financial_expectations,
+    isVerified,
+    linkedin_link,
+    trelloUrl
+  } = row;
 
   const confirm = useBoolean();
   const quickEdit = useBoolean();
@@ -53,37 +63,35 @@ export default function UserTableRow({
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox checked={selected} onClick={onSelectRow}/>
         </TableCell>
 
         <TableCell>
-          <ButtonBase sx={{ display: 'flex', alignItems: 'center', width: '100%' }} onClick={handleRowClick}>
-            <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
+          <ButtonBase
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+              textAlign: 'left',
+            }}
+            onClick={handleRowClick}
+          >
+            <Avatar alt={first_name} src={avatarUrl} sx={{mr: 2}}/>
             <ListItemText
-              primary={name}
-              secondary={email}
-              primaryTypographyProps={{ variant: 'body2', sx: { fontWeight: 'normal' } }}
+              primary={`${first_name ?? ''} ${last_name ?? ''}`.trim() || 'Unnamed User'}
+              secondary={role}
+              primaryTypographyProps={{
+                variant: 'body2',
+                sx: { fontWeight: 'normal', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+              }}
               secondaryTypographyProps={{ variant: 'caption', color: 'text.disabled' }}
               sx={{ m: 0 }}
             />
           </ButtonBase>
         </TableCell>
 
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
-            {phoneNumber}
-          </ButtonBase>
-        </TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
-            {profile}
-          </ButtonBase>
-        </TableCell>
-
         <TableCell>
-          <ButtonBase sx={{ width: '100%' }} onClick={handleRowClick}>
+          <ButtonBase sx={{width: '100%'}} onClick={handleRowClick}>
             <Label
               variant="soft"
               color={
@@ -98,43 +106,64 @@ export default function UserTableRow({
           </ButtonBase>
         </TableCell>
 
-        <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
-          <Tooltip title="LinkedIn Profile" placement="top" arrow>
-            <IconButton component="a" href={linkedinUrl} target="_blank" rel="noopener noreferrer">
-              <Iconify icon="mdi:linkedin" />
+        <TableCell sx={{whiteSpace: 'nowrap', textAlign: 'left', width: '15%'}}>
+          <ButtonBase sx={{width: '100%'}} onClick={handleRowClick}>
+            {financial_expectations}
+          </ButtonBase>
+        </TableCell>
+
+        <TableCell sx={{whiteSpace: 'nowrap', textAlign: 'left', width: '15%'}}>
+          <ButtonBase sx={{width: '100%'}} onClick={handleRowClick}>
+            {isVerified}
+          </ButtonBase>
+        </TableCell>
+
+
+        <TableCell>
+          <Tooltip title="Trello Card Id Profile" placement="top" arrow>
+            <IconButton component="a" href={trelloUrl} target="_blank" rel="noopener noreferrer">
+              <Iconify icon="mdi:trello"/>
             </IconButton>
           </Tooltip>
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell align="center" sx={{whiteSpace: 'nowrap'}}>
+          <Tooltip title="LinkedIn Profile" placement="top" arrow>
+            <IconButton component="a" href={linkedin_link} target="_blank" rel="noopener noreferrer">
+              <Iconify icon="mdi:linkedin"/>
+            </IconButton>
+          </Tooltip>
+        </TableCell>
+
+        <TableCell align="right" sx={{px: 1, whiteSpace: 'nowrap'}}>
           <Tooltip title="Quick Edit" placement="top" arrow>
             <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
+              <Iconify icon="solar:pen-bold"/>
             </IconButton>
           </Tooltip>
 
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <Iconify icon="eva:more-vertical-fill"/>
           </IconButton>
         </TableCell>
       </TableRow>
 
-      <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} />
+      <UserQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse}/>
 
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{ width: 140 }}
+        sx={{width: 140}}
       >
         <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{color: 'error.main'}}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
+          <Iconify icon="solar:trash-bin-trash-bold"/>
           Delete
         </MenuItem>
 
@@ -144,7 +173,7 @@ export default function UserTableRow({
             popover.onClose();
           }}
         >
-          <Iconify icon="solar:pen-bold" />
+          <Iconify icon="solar:pen-bold"/>
           Edit
         </MenuItem>
       </CustomPopover>

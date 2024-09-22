@@ -1,4 +1,4 @@
-import { CustomFile } from 'src/components/upload';
+import {CustomFile} from 'src/components/upload';
 
 // ----------------------------------------------------------------------
 
@@ -94,9 +94,10 @@ export type IUserCard = {
 
 export type IUserItem = {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   city: string;
-  profile: string;
+  role: string;
   email: string;
   status: string;
   address: string;
@@ -105,16 +106,22 @@ export type IUserItem = {
   avatarUrl: string;
   phoneNumber: string;
   isVerified: boolean;
-  linkedinUrl: string;
+  trello_description: {
+    linkedinLink: string;
+    beautifiedDescription: string;  // Update this to match the actual structure
+  };
+  linkedin_link: string;
+  trelloUrl: string;
 };
 
 
 export type IApiProfile = {
   id: number;
-  fullNameCandidate: string;
+  first_name: string;
+  last_name: string;
   locationCity: string;
   profile: string
-  financialExpectations: string | null;
+  financial_expectations: string | null;
   contactNo: string;
   email: string | null;
   status: string | null;

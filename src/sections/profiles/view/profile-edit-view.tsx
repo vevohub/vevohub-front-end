@@ -11,7 +11,7 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {IUserItem} from 'src/types/user';
 
 import {fetchUserById} from "../../../_mock";
-import UserNewEditForm from '../user-new-edit-form';
+import ListUserForms from "../user-list-form";
 import {queryClient} from "../../../hooks/queryClient";
 
 type Props = {
@@ -21,20 +21,20 @@ type Props = {
 const ProfileEditPage = ({ id }: Props) => {
   const settings = useSettingsContext();
 
-
   const { data: currentUser, error, isLoading, isFetching } = useQuery<IUserItem>(
     ['user', id],
     () => fetchUserById(id),
     {
       staleTime: 4 * 60 * 1000, // 4 minutes
       cacheTime: 4 * 60 * 1000, // 4 minutes
-      initialData: () => 
+      initialData: () =>
         // Provide initial data if available in the cache
-         queryClient.getQueryData<IUserItem>(['user', id])
+        queryClient.getQueryData<IUserItem>(['user', id])
       ,
     }
   );
 
+  console.log("currentUser Data:", currentUser);  // Log the currentUser data
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -48,7 +48,7 @@ const ProfileEditPage = ({ id }: Props) => {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading={currentUser?.name}
+        heading={`${currentUser?.first_name ?? ''} ${currentUser?.last_name ?? ''}`.trim()}
         links={[
           {
             name: 'Dashboard',
@@ -58,13 +58,13 @@ const ProfileEditPage = ({ id }: Props) => {
             name: 'Profile',
             href: paths.dashboard.profiles.root,
           },
-          { name: currentUser?.name },
+          { name: `${currentUser?.first_name ?? ''} ${currentUser?.last_name ?? ''}`.trim() },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <UserNewEditForm currentUser={currentUser} />
+      <ListUserForms currentUser={currentUser} />
     </Container>
   );
 };

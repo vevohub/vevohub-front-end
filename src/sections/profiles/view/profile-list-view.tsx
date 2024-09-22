@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import React, {useState, useCallback} from 'react';
+import {useQuery, useQueryClient} from 'react-query';
 
-import { alpha } from '@mui/material/styles';
+import {alpha} from '@mui/material/styles';
 import {
   Tab,
   Card,
@@ -15,31 +15,31 @@ import {
   TableContainer,
 } from '@mui/material';
 
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
+import {paths} from 'src/routes/paths';
+import {useRouter} from 'src/routes/hooks';
+import {RouterLink} from 'src/routes/components';
 
-import { useBoolean } from 'src/hooks/use-boolean';
+import {useBoolean} from 'src/hooks/use-boolean';
 
-import { fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems } from 'src/_mock';
+import {fetchRoles, fetchCandidates, USER_STATUS_OPTIONS, transformApiDataToUserItems} from 'src/_mock';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import { useSnackbar } from 'src/components/snackbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
+import {useSnackbar} from 'src/components/snackbar';
+import {ConfirmDialog} from 'src/components/custom-dialog';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
   useTable,
+  emptyRows,
   TableNoData,
   TableEmptyRows,
   TableHeadCustom,
   TableSelectedAction,
-  TablePaginationCustom, emptyRows,
+  TablePaginationCustom,
 } from 'src/components/table';
 
-import { IUserItem, IUserTableFilters, IUserTableFilterValue } from 'src/types/user';
+import {IUserItem, IUserTableFilters, IUserTableFilterValue} from 'src/types/user';
 
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
@@ -49,9 +49,10 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name' },
-  { id: 'phoneNumber', label: 'Phone Number', width: 180 },
-  { id: 'role', label: 'Role', width: 180 },
-  { id: 'status', label: 'Status', width: 100 },
+  { id: 'status', label: 'Status', width: 180 },
+  { id: 'fee', label: 'Fee', width: 100 },
+  { id: 'gdpr', label: 'GDPR', width: 100 },
+  { id: 'trello', label: 'Trello', width: 100 },
   { id: 'linkedin', label: 'LinkedIn', width: 100 },
   { id: 'actions', label: 'Actions', width: 100 }
 ];
@@ -80,7 +81,6 @@ const normalizeData = (data: (string | null)[]): string[] => {
 export default function ProfileListView() {
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
-  const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
   const queryClient = useQueryClient();
@@ -103,7 +103,7 @@ export default function ProfileListView() {
   });
 
   // Fetch candidates with filters, including search and pagination
-  const { data: apiData, error, isLoading, isFetching } = useQuery(
+  const { data: apiData, isLoading, isFetching } = useQuery(
     ['candidates', page, size, filters],
     () => fetchCandidates(page, size, filters.role, filters.name),
     {
